@@ -1,8 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+  <script id="vertexShader" type="x-shader/x-vertex">
+    varying vec3 vNormal;
+    varying vec3 vPositionNormal;
+    void main() 
+    {
+      vNormal = normalize( normalMatrix * normal );
+      vPositionNormal = normalize(( modelViewMatrix * vec4(position, 1.0) ).xyz);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+  </script>
+  <script id="fragmentShader" type="x-shader/x-vertex"> 
+    uniform vec3 glowColor;
+    uniform float b;
+    uniform float p;
+    uniform float s;
+    varying vec3 vNormal;
+    varying vec3 vPositionNormal;
+    void main() 
+    {
+      float a = pow( b + s * abs(dot(vNormal, vPositionNormal)), p );
+      gl_FragColor = vec4( glowColor, a );
+    }
+  </script>
+
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <meta
@@ -29,15 +54,8 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
+
+
 </html>

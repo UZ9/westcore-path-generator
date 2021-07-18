@@ -1,15 +1,11 @@
 import * as THREE from 'three'
-import React, { useRef, Suspense, useState } from 'react'
+import React, { useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 
 import Model from "./models/TiPFieldModel"
 import { OrbitControls, softShadows } from '@react-three/drei'
-import { useControls } from "leva"
 import MarkerManager from './nodes/MarkerManager'
-import { Texture } from 'three'
 import UIManager from './ui/UIManager'
-import { MarkerConnection } from './nodes/MarkerConnection'
-import { Marker, MarkerElement } from './nodes/Marker'
 
 softShadows();
 

@@ -1,10 +1,8 @@
 import * as THREE from 'three'
-import { useRef, useState } from 'react'
-import { Marker, MarkerElement } from './Marker'
+import { Marker } from './Marker'
 import React from 'react'
 import { ThreeEvent } from '@react-three/fiber'
 import { useControls } from 'leva'
-import { render } from '@testing-library/react'
 
 type MarkerConnectionProps = {
     startMarker: Marker,

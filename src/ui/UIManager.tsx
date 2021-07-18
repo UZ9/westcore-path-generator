@@ -1,5 +1,3 @@
-import { Card } from "@material-ui/core";
-import { button, useControls } from "leva";
 import React from "react";
 
 export default function UIManager() {

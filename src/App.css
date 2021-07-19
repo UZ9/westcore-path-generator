@@ -1,0 +1,9 @@
+.panel {
+    position: absolute;
+    width: 300px;
+    background: #181c20;
+    float: right;
+    right: 0px;
+    padding-top: 30px;
+    z-index: 1000;
+  }

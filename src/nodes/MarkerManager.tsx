@@ -1,44 +1,59 @@
 import React from "react";
 import { Marker, MarkerElement } from "./Marker"
-import { MarkerConnection } from "./MarkerConnection";
+import MarkerConnection, { MarkerConnectionElement } from "./MarkerConnection";
 
 type NodeManagerProps = {
 
 };
 
 type NodeManagerState = {
-    nodes: Array<Marker>;
+    markers: Array<Marker>,
+    markerConnections: Array<MarkerConnection>
 }
 
 export default class MarkerManager extends React.Component<NodeManagerProps, NodeManagerState> {
     state: NodeManagerState = {
-        nodes: []
+        markers: [],
+        markerConnections: [],
     };
 
     render() {
         return (
             <>
-                {this.state.nodes.map((item, index) => {
+                {this.state.markers.map((item, index) => {
                     return (
                         <MarkerElement key={index} position={item.position} />
                     )
                 })}
-                {this.state.nodes.length > 1 ? this.state.nodes.slice(0, this.state.nodes.length - 1).map((item, index) => {
+                {this.state.markerConnections.map((item, index) => {
                     console.log(`Name of ${index}:}`)
 
                     return (
-                        <MarkerConnection key={index} startMarker={item} endMarker={this.state.nodes[index + 1]}/>
+                        <MarkerConnectionElement key={index} markerConnection={item} />
                     )
-                }) : ''}
+                })}
             </>
         )
     }
 
     addNode = (position: THREE.Vector3) => {
-        this.setState((state) => ({
-            nodes: this.state.nodes.concat(new Marker(position))
-        }))
+        this.setState({
+            markers: this.state.markers.concat(new Marker(position)),
+            markerConnections: this.state.markerConnections
+        }, () => {
+            if (this.state.markers.length > 1) {
+                this.addNodeConnection(this.state.markers[this.state.markers.length - 2], this.state.markers[this.state.markers.length - 1])
+            }
+    
+            console.log(this.state.markers)
+        })
 
-        console.log(this.state.nodes)
+    }
+
+    addNodeConnection = (startMarker: Marker, endMarker: Marker) => {
+        this.setState((state) => ({
+            markers: this.state.markers,
+            markerConnections: this.state.markerConnections.concat(new MarkerConnection(startMarker, endMarker))
+        }))
     }
 }

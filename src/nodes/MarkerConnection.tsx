@@ -2,15 +2,13 @@ import * as THREE from 'three'
 import { Marker } from './Marker'
 import React from 'react'
 import { ThreeEvent } from '@react-three/fiber'
-import { useControls } from 'leva'
+import { button, Leva, LevaPanel, useControls, useCreateStore } from 'leva'
 
 type MarkerConnectionProps = {
-    startMarker: Marker,
-    endMarker: Marker
+    markerConnection: MarkerConnection
 }
 
 type MarkerConnectionState = {
-    name: string,
     hovered: boolean,
     selected: boolean
 }
@@ -20,42 +18,67 @@ type MarkerConnectionUIProps = {
 }
 
 function MarkerConnectionUI(props: MarkerConnectionUIProps) {
-    useControls({
-        "Name": {
-            value: props.markerConnection.state.name,
-            onChange: (v) => {
-                console.log("Found a change to " + v + ", changing now.")
-                props.markerConnection.setState({
-                    name: v,
-                    hovered: props.markerConnection.state.hovered,
-                    selected: props.markerConnection.state.selected
-                });
-            }
-        }
-    })
+    let name = `Waypoint Name`
 
-    console.log(props.markerConnection.state.name)
+    const store = useCreateStore();
+
+    // useControls({
+    //     [name] : {
+    //         value: props.markerConnection.name,
+    //         onChange: (v) => {
+    //             console.log("Found a change to " + v + ", changing now.")
+    //             props.markerConnection.name = v;
+    //         }
+    //     }
+    // })
+
+    console.log(props.markerConnection.name)
+
+    useControls({ 'New Box': button(() => alert("Nice")) })
 
     return (
-        <></>
+        <>
+        </>
     )
 }
 
-let currentSelectedConnection : MarkerConnection;
+let currentSelectedConnection: MarkerConnectionElement;
 
-export class MarkerConnection extends React.Component<MarkerConnectionProps, MarkerConnectionState> {
+export default class MarkerConnection {
+    name = "Waypoint";
+    startMarker: Marker;
+    endMarker: Marker;
+
+    constructor(startMarker: Marker, endMarker: Marker) {
+        this.startMarker = startMarker;
+        this.endMarker = endMarker;
+    }
+}
+
+export class MarkerConnectionElement extends React.Component<MarkerConnectionProps, MarkerConnectionState> {
+
+    startMarker: Marker;
+    endMarker: Marker;
+    name: string;
+
+
     constructor(props: MarkerConnectionProps) {
         super(props);
 
         this.state = {
-            name: "Waypoint",
             hovered: false,
             selected: false
         };
+
+        this.startMarker = this.props.markerConnection.startMarker
+        this.endMarker = this.props.markerConnection.endMarker
+        this.name = this.props.markerConnection.name
     }
 
+
+
     getDistance = () => {
-        return this.props.endMarker.position.distanceTo(this.props.startMarker.position);
+        return this.endMarker.position.distanceTo(this.startMarker.position);
     }
 
     getGeometry = () => {
@@ -75,14 +98,12 @@ export class MarkerConnection extends React.Component<MarkerConnectionProps, Mar
     onClick = (event: ThreeEvent<MouseEvent>) => {
         // Because the user has selected a new segment, go ahead and remove the previous selection
         currentSelectedConnection?.setState({
-            name: this.state.name,
             hovered: false,
             selected: false,
         })
 
         // Toggle selected boolean
         this.setState({
-            name: this.state.name,
             hovered: this.state.hovered,
             selected: !this.state.selected,
         })
@@ -91,8 +112,8 @@ export class MarkerConnection extends React.Component<MarkerConnectionProps, Mar
     }
 
     render() {
-        const startPos = this.props.startMarker.position;
-        const endPos = this.props.endMarker.position;
+        const startPos = this.startMarker.position;
+        const endPos = this.endMarker.position;
 
         // Find the angle between the startMarker and endMarker
         // As this is 3D and we don't care about elevation, x and z are used
@@ -101,8 +122,8 @@ export class MarkerConnection extends React.Component<MarkerConnectionProps, Mar
         const position = new THREE.Vector3();
 
         // Calculate the midpoint of the vectors
-        position.subVectors(this.props.endMarker.position, this.props.startMarker.position).divideScalar(2).add(this.props.startMarker.position);
-        
+        position.subVectors(this.endMarker.position, this.startMarker.position).divideScalar(2).add(this.startMarker.position);
+
         // Add a bit of y-offset to avoid clipping the floor
         position.add(new THREE.Vector3(0, 0.01, 0));
 
@@ -112,12 +133,12 @@ export class MarkerConnection extends React.Component<MarkerConnectionProps, Mar
                     rotation={[Math.PI / 2, 0, -m]} // Rotation is in radians, X is rotated to be aligned with the field
                     position={position}
                     geometry={this.getGeometry()}
-                    material={this.getMaterial()} 
+                    material={this.getMaterial()}
                     onClick={(event) => this.onClick(event)}
-                    onPointerOver={(_event) => this.setState(() => ({ name: this.state.name, selected: this.state.selected, hovered: true }))}
-                    onPointerOut={(_event) => this.setState(() => ({ name: this.state.name, selected: this.state.selected, hovered: false }))}
+                    onPointerOver={(_event) => this.setState(() => ({ selected: this.state.selected, hovered: true }))}
+                    onPointerOut={(_event) => this.setState(() => ({ selected: this.state.selected, hovered: false }))}
                 />
-                {this.state.selected ? <MarkerConnectionUI markerConnection={this}/> : ''}
+                {this.state.selected ? <MarkerConnectionUI markerConnection={this.props.markerConnection} /> : ''}
             </>)
     }
 

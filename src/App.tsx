@@ -5,7 +5,8 @@ import { Canvas } from '@react-three/fiber'
 import Model from "./models/FieldModel"
 import { OrbitControls, softShadows } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
-import UIManager from './ui/UIManager'
+import './App.css'
+import UIManager, { UIManagerRenderer } from './ui/UIManager'
 
 softShadows();
 
@@ -17,6 +18,8 @@ export default function App() {
 
   const d = 1000;
   const camera = useRef<THREE.PerspectiveCamera>(null!);
+  const uiRenderer = useRef<UIManagerRenderer>(null!);
+  // const ui = React.createRef<UIManager>(null!);
   const markerManager = useRef<MarkerManager>(null!);
 
   const container = document.createElement("div");
@@ -39,10 +42,14 @@ export default function App() {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <UIManager />
+      
+      
+
       <Canvas raycaster={{ filter: intersectionsFilter }} gl={{ shadowMapEnabled: true, shadowMapType: THREE.BasicShadowMap, antialias: true, pixelRatio: window.devicePixelRatio, toneMapping: THREE.ACESFilmicToneMapping }} camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
 
-        <ambientLight intensity={0.2} />
+        <UIManagerRenderer ref={uiRenderer}/>
+
+        {/* <ambientLight intensity={0.15} /> */}
         <pointLight position={[100, 50, 0]} shadowCameraLeft={-d} shadowCameraRight={d} shadowCameraTop={d} shadowCameraBottom={-d} shadowMapHeight={1024} shadowMapWidth={1024} castShadow={true} intensity={2} />
 
         <Suspense fallback={null}>
@@ -56,6 +63,8 @@ export default function App() {
         <MarkerManager ref={markerManager} />
 
       </Canvas>
+
+      <UIManager uiRenderer={uiRenderer}/>
 
 
 

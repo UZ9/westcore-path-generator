@@ -37,7 +37,7 @@ export default function App() {
   // Invert the geometry for the textures to face inwards
   sphereGeometry.scale(-1, 1, 1);
 
-  const backgroundTexture = new THREE.TextureLoader().load("/background.jpg");
+  const backgroundTexture = new THREE.TextureLoader().load(process.env.PUBLIC_URL + "/background.jpg");
 
   // backgroundTexture.wrapS = THREE.RepeatWrapping;
   // backgroundTexture.wrapT = THREE.RepeatWrapping;

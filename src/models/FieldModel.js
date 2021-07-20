@@ -43,7 +43,10 @@ export default function Model(props) {
   
       // clicked.object.material = testMat;
   
-      props.markerManager.current.addNode(clicked.point);
+      console.log("UI:")
+      console.log(props);
+
+      props.ui(clicked.point);
       
     } else {
       // Restore old material

@@ -17,8 +17,6 @@ function intersectionsFilter(intersections: THREE.Intersection[]) {
 }
 
 export default function App() {
-  console.log("Redrawing state...")
-
   const uiRef = useRef();
   const ui = uiRef.current;
 

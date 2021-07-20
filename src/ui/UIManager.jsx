@@ -4,8 +4,6 @@ import { useEffect, useRef } from "react";
 import { Text, Billboard } from "@react-three/drei"
 
 function Node({ initialPos, index, selected, setLocalSelected, setSelect }) {
-    console.log("I'm created, cool!")
-
     const store = useCreateStore();
 
     const [{ name, position }] = useControls(
@@ -71,8 +69,6 @@ export class UIManagerRenderer extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log("Starting UIManager")
-
         this.state = {
             nodes: [],
             selection: null,
@@ -91,8 +87,6 @@ export class UIManagerRenderer extends React.Component {
     }
 
     setUiManager(manager, callback) {
-
-        console.log("Setting manager")
         this.setState({
             nodes: this.state.nodes,
             uiManager: manager,
@@ -131,7 +125,6 @@ export default function UIManager(props) {
     // }
 
     let addNode = (pos) => {
-        console.log("ADding node")
         stateRef.current.props.uiRenderer.addNode(pos);
     }
 
@@ -143,13 +136,7 @@ export default function UIManager(props) {
 
             if (stateRef.current.props.uiRenderer.state.uiManager !== null && stateRef.current.props.uiRenderer.state.uiManager !== undefined) return;
 
-            console.log(["stateRef current props uiRenderer", stateRef.current.props.uiRenderer])
-
-            stateRef.current.props.uiRenderer.setUiManager({ selection, setSelection }, () => {
-                console.log("Successfully set uirenderer")
-            });
-
-            // console.log(props.uiRenderer);
+            stateRef.current.props.uiRenderer.setUiManager({ selection, setSelection });
         }
 
         return () => {

@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { Marker } from './Marker'
 import React from 'react'
 import { ThreeEvent } from '@react-three/fiber'
-import { button, Leva, LevaPanel, useControls, useCreateStore } from 'leva'
+import { button, useControls } from 'leva'
 
 type MarkerConnectionProps = {
     markerConnection: MarkerConnection
@@ -18,9 +18,9 @@ type MarkerConnectionUIProps = {
 }
 
 function MarkerConnectionUI(props: MarkerConnectionUIProps) {
-    let name = `Waypoint Name`
+    // let name = `Waypoint Name`
 
-    const store = useCreateStore();
+    // const store = useCreateStore();
 
     // useControls({
     //     [name] : {

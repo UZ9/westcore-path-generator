@@ -1,13 +1,12 @@
 import * as THREE from 'three'
-import React, { useRef, Suspense, useState } from 'react'
+import React, { useRef, Suspense} from 'react'
 import { Canvas } from '@react-three/fiber'
 
 import Model from "./models/FieldModel"
-import { Text, OrbitControls, softShadows } from '@react-three/drei'
+import { OrbitControls, softShadows } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import UIManager, { UIManagerRenderer } from './ui/UIManager'
-import ReactDOM from 'react-dom'
 
 
 softShadows();

@@ -1,5 +1,5 @@
 import { button, Leva, LevaPanel, useControls, useCreateStore } from "leva";
-import React, { boolean } from "react";
+import React from "react";
 import { useEffect, useRef } from "react";
 import { Text, Billboard } from "@react-three/drei"
 
@@ -123,14 +123,12 @@ export default function UIManager(props) {
 
     stateRef.current = { props };
 
-
-
-
-    const unSelect = (e) => {
-        if (e.target === e.currentTarget) {
-            setSelection([-1, null])
-        }
-    }
+    // Used for unselecting an object
+    // const unSelect = (e) => {
+    //     if (e.target === e.currentTarget) {
+    //         setSelection([-1, null])
+    //     }
+    // }
 
     let addNode = (pos) => {
         console.log("ADding node")

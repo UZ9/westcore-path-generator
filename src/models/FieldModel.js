@@ -1432,4 +1432,4 @@ export default function Model(props) {
   )
 }
 
-useGLTF.preload('fieldmodel.gltf')
+useGLTF.preload(process.env.PUBLIC_URL, '/fieldmodel.gltf')

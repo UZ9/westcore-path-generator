@@ -7,3 +7,15 @@
     padding-top: 30px;
     z-index: 1000;
   }
+
+  /* With the huge lack of documentation on how literally anything works for leva, until they respond this will manually
+     override the existing css color.
+  */
+  .leva-c-fOioiK {
+    background-color: #ff003c
+  }
+
+  /* Override hover color */
+  .leva-c-fOioiK:hover {
+    background-color: #ff003c
+  }

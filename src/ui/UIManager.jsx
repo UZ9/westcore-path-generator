@@ -32,7 +32,7 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect }) {
             <Billboard
                 position={[position[0], 2, position[1]]}
                 follow={true}
-                args={[0,0]}
+                args={[0, 0]}
             >
                 <Text
                     color="#ededed"
@@ -71,6 +71,7 @@ export class UIManagerRenderer extends React.Component {
 
         this.state = {
             nodes: [],
+            markerCreationMode: false,
             selection: null,
             store: null,
             uiManager: null
@@ -78,9 +79,23 @@ export class UIManagerRenderer extends React.Component {
     }
 
     addNode(node) {
+        // We only want to add new markers if we're in marker creation mode
+        if (this.state.markerCreationMode) {
+            this.setState({
+                nodes: [...this.state.nodes, node],
+                uiManager: this.state.uiManager,
+                markerCreationMode: this.state.markerCreationMode,
+                selection: this.state.selection,
+                store: this.state.store
+            });
+        }
+    }
+
+    toggleCreationMode() {
         this.setState({
-            nodes: [...this.state.nodes, node],
+            nodes: this.state.nodes,
             uiManager: this.state.uiManager,
+            markerCreationMode: !this.state.markerCreationMode,
             selection: this.state.selection,
             store: this.state.store
         });
@@ -90,6 +105,7 @@ export class UIManagerRenderer extends React.Component {
         this.setState({
             nodes: this.state.nodes,
             uiManager: manager,
+            markerCreationMode: this.state.markerCreationMode,
             selection: this.state.selection,
             store: this.state.store
         });
@@ -111,6 +127,7 @@ export class UIManagerRenderer extends React.Component {
 
 export default function UIManager(props) {
     const [[selection, store], setSelection] = React.useState([-1, null]);
+    const [buttonSelected, setButtonSelected] = React.useState(false); 
     const stateRef = useRef();
 
     stateRef.current = { props };
@@ -144,14 +161,31 @@ export default function UIManager(props) {
 
     }, [props.uiRenderer, props.uiRef, selection])
 
-    useControls({
-        'Enter Marker Mode': button(addNode)
-    })
+    // This is absolutely cursed but is needed for the automatic css injection
+    useControls({"Remove All Markers": button(() => {})})
+
+    const waypointButton = useRef();
 
     return (
         <div style={{ position: "absolute", right: "1em", top: "1em" }} className="panel">
-            <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
+            <div className={"leva-c-kWgxhW leva-c-kWgxhW-bSMcqW-fill-true leva-c-kWgxhW-nNfbl-hideTitleBar-true"}>
+                <div className={"leva-c-hBtFDW"}>
+                    <div className={"leva-c-dmsJDs leva-c-dmsJDs-lpvxwm-toggled-true leva-c-dmsJDs-hXSjjU-isRoot-true"}>
+                        <div className={"leva-c-bduird"}>
+                            <button
+                                ref={waypointButton}
+                                onClick={() => { setButtonSelected(!buttonSelected); stateRef.current.props.uiRenderer.toggleCreationMode()}}
+                                style={{color: "#ededed", backgroundColor: (buttonSelected ? "#ff003c" : "#007bff") }}
+                                className={"leva-c-fOioiK"}>{buttonSelected ? "Exit Waypoint Creation" : "Enter Waypoint Creation"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <LevaPanel store={store} fill flat titleBar={false} />
+            <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
+            
         </div>
     );
 }

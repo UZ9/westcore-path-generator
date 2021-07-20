@@ -60,7 +60,7 @@ export default function Model(props) {
   })
 
   const group = useRef()
-  const { nodes, materials } = useGLTF('/fieldmodel.gltf')
+  const { nodes, materials } = useGLTF(process.env.PUBLIC_URL + '/fieldmodel.gltf')
 
   const tiles = [
     nodes.FieldTile000,
@@ -1432,4 +1432,4 @@ export default function Model(props) {
   )
 }
 
-useGLTF.preload(process.env.PUBLIC_URL, '/fieldmodel.gltf')
+useGLTF.preload(process.env.PUBLIC_URL + '/fieldmodel.gltf')

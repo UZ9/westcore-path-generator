@@ -29,6 +29,12 @@ jobs:
 
     - name: 🔨 Build Project
       run: npm run build --if-present
+      
+    - name: 🚀 Deploy Project
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        branch: gh-pages # Branch the action will deploy to
+        folder: build # Folder containing the deployed website
   
 #     - name: 🧪 Test Project
 #       run: npm test --passWithNoTests

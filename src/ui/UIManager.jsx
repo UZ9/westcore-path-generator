@@ -86,14 +86,12 @@ export class UIManagerRenderer extends React.Component {
         });
     }
 
-    setUiManager(manager, callback) {
+    setUiManager(manager) {
         this.setState({
             nodes: this.state.nodes,
             uiManager: manager,
             selection: this.state.selection,
             store: this.state.store
-        }, () => {
-            callback()
         });
     }
 
@@ -147,7 +145,7 @@ export default function UIManager(props) {
     }, [props.uiRenderer, props.uiRef, selection])
 
     useControls({
-        'New Node': button(addNode)
+        'Enter Marker Mode': button(addNode)
     })
 
     return (

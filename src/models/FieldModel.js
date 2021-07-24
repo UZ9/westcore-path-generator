@@ -237,7 +237,7 @@ export default function Model(props) {
         scale={[6.3, 6.2 ,1]}
         onClick={sayClicked}
         ref={tileMesh}
-        position={[0, 0, 0]}
+        position={[0, -0.33, 0]}
         material={tileMat} />
       {/* <mesh
         geometry={nodes.FieldTile000.geometry}

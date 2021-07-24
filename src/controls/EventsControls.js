@@ -278,7 +278,6 @@ export const EventsControls = function (camera, domElement) {
 						if (_this.offsetUse) {
 							var pos = new THREE.Vector3().copy(_this.focused.position);
 							_this.offset.subVectors(_this.intersects[0].point, pos);
-							//console.log( _this.offset );
 						}
 						//_this.offset.copy( _this.intersects[ 0 ].point ).sub( _this.map.position );
 					}
@@ -316,7 +315,6 @@ export const EventsControls = function (camera, domElement) {
 						if (_this.offsetUse) {
 							var pos = new THREE.Vector3().copy(_this.focused.position);
 							_this.offset.subVectors(_this.intersects[0].point, pos);
-							//console.log( _this.offset );
 						}
 						//_this.offset.copy( _this.intersects[ 0 ].point ).sub( _this.map.position );
 					}
@@ -344,13 +342,8 @@ export const EventsControls = function (camera, domElement) {
 				_DisplaceIntersectsMap = _this.raycaster.intersectObject(_this.map);
 				//_this._setMap();
 				try {
-					console.log("we found one boys")
-
-					console.log(_this.map);
 
 					var pos = new THREE.Vector3().copy(_DisplaceIntersectsMap[0].point.sub(_this.offset));
-
-					console.log([_this.offset, pos])
 
 					_this.focused.position.copy(pos);
 				}
@@ -371,7 +364,6 @@ export const EventsControls = function (camera, domElement) {
 						if (_DisplacemouseOvered !== _this.intersects[0].object) {
 							_this.mouseOut();
 							_this.select(_this.intersects[0].object);
-							//	console.log( '_this.mouseOver();' );
 							_this.mouseOver();
 						}
 					}

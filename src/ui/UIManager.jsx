@@ -37,20 +37,14 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
             })
 
             eventControls.attachEvent('dragAndDrop', function () {
-                console.log("Position: ")
-                console.log(this.focused);
-                console.log(mesh.current);
                 this.focused.position.y = this.previous.y;
             });
 
             eventControls.attach(mesh.current);
 
-            console.log("Setting map to ");
-            console.log(model.current);
-
             eventControls.map = model.current;
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialPos, index, setSelect, store, camera, gl.domElement, setDragging, model])
 
     // END DRAG
@@ -60,27 +54,12 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
             name: "Waypoint " + index
         }),
         { store }
-
-
     )
-
-    // const bind = useDrag(({ offset: [x, y]}) => {
-
-
-    //     const[,,z] = position;
-
-    //     console.log([x, y, z, aspect]);
-
-    //     setPosition([x / aspect, -y / aspect, z]);
-    // }, { pointerEvents: true });
 
     const mesh = useRef(null)
     const [hovered, setHover] = React.useState(false)
 
     const billboard = useRef(null);
-
-    if (mesh.current !== null)
-        console.log(mesh.current.position)
 
     function getMeshPos() {
         const currentPos = mesh.current.position;
@@ -95,22 +74,22 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 position={mesh.current !== null ? getMeshPos() : [0, 1, 0]}
                 follow={true}
                 args={[0, 0]}
-                enabled={!selected}
+                // enabled={!selected}
             >
                 <Text
                     color="#ededed"
                     fontSize={1.5}
                     maxWidth={60}
                     lineHeight={1}
-                    outlineBlur={"10%"}
+                    outlineBlur={"15%"}
                     outlineColor={"#000000"}
                     textAlign="left"
 
-                    enabled={!selected}
+                    // enabled={!selected}
                     // font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
                     anchorX="center"
                     anchorY="middle">
-                    {name}{mesh.current !== null ? "True" : "False"}
+                    {name}
                 </Text>
             </Billboard>
 
@@ -118,7 +97,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 // { ...bind() }
                 ref={mesh}
                 scale={1}
-                onClick={(_event) => { setSelect([index, store]) }}
+                onClick={(_event) => { setSelect([index, store]); }}
             >
                 <cylinderGeometry args={[1, 1, 1]} />
                 <meshStandardMaterial color={selected ? 'green' : hovered ? 'yellow' : 'blue'} />
@@ -142,6 +121,18 @@ export class UIManagerRenderer extends React.Component {
             uiManager: null,
 
         }
+    }
+
+    setSelected = (val) => {
+        this.setState({
+            nodes: this.state.nodes,
+            uiManager: this.state.uiManager,
+            camera: this.state.camera,
+            dragging: this.state.dragging,
+            markerCreationMode: this.state.markerCreationMode,
+            selection: val,
+            store: this.state.store
+        });
     }
 
     setCamera = (val) => {
@@ -208,18 +199,13 @@ export class UIManagerRenderer extends React.Component {
     }
 
     render() {
-        console.log("Drawing with model of :")
-        console.log(this.state);
-        console.log(this.props);
-        console.log("doo doo dat ad")
-
         return <>
             {(this.state.nodes.map((v, i) => (
                 <Node
                     key={i}
                     initialPos={v}
-                    selected={this.state.selection === i}
-                    setSelect={this.state.uiManager.setSelection}
+                    selected={this.state.selection !== null ? this.state.selection[0] === i : false}
+                    setSelect={this.state.uiManager.setNodeSelection}
                     setLocalSelected={this.setLocalSelected}
                     dragging={this.state.dragging}
                     setDragging={this.setDragging}
@@ -227,9 +213,9 @@ export class UIManagerRenderer extends React.Component {
                     index={i}
                 />
             )))}
-            {<OrbitControls enabled={!this.state.dragging}/>}
+            {<OrbitControls enabled={!this.state.dragging} />}
             {/* {this.props.camera() !== null ?? <OrbitControls camera={this.props.camera().current} />} */}
-            
+
         </>
     }
 }
@@ -248,6 +234,14 @@ export default function UIManager(props) {
     //     }
     // }
 
+    let setNodeSelection = (node) => {
+        stateRef.current.props.uiRenderer.setSelected(node);
+
+        setSelection(node);
+
+        return
+    }
+
     let addNode = (pos) => {
         stateRef.current.props.uiRenderer.addNode(pos);
     }
@@ -260,7 +254,7 @@ export default function UIManager(props) {
 
             if (stateRef.current.props.uiRenderer.state.uiManager !== null && stateRef.current.props.uiRenderer.state.uiManager !== undefined) return;
 
-            stateRef.current.props.uiRenderer.setUiManager({ selection, setSelection });
+            stateRef.current.props.uiRenderer.setUiManager({ selection, setNodeSelection });
         }
 
         return () => {

@@ -35,7 +35,6 @@ export default function Model(props) {
 
   const sayClicked = (clicked) => {
     clicked.stopPropagation();
-    // console.log(props.nodes);
     // props.nodes.push(<Marker key={i++} position={[Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1)]}/>)
     if (clicked.object.material !== testMat) {
 
@@ -44,16 +43,12 @@ export default function Model(props) {
 
       // clicked.object.material = testMat;
 
-      console.log("UI:")
-      console.log(props);
-
       props.ui(clicked.point);
 
     } else {
       // Restore old material
       clicked.object.material = matDict[clicked.object.uuid]
     }
-    console.log(props.nodes)
   }
 
   const tileMat = new THREE.MeshPhongMaterial({
@@ -132,9 +127,6 @@ export default function Model(props) {
     if (props.tiles === null) {
       props.setTiles(tileMesh);
     }
-
-    console.log("Set tile ");
-    console.log(tileMesh);
   })
 
   return (

@@ -45,9 +45,6 @@ export default function App() {
     // color: "black"
   })
 
-  console.log("Redrawing app:")
-  console.log(tiles);
-
   if (uiRenderer !== null && uiRenderer.state.camera == null) {
     uiRenderer.setCamera(camera);
   }

@@ -1,41 +1,45 @@
 import { button, Leva, LevaPanel, useControls, useCreateStore } from "leva";
 import React from "react";
-import * as THREE from 'three'
 import { useEffect, useRef } from "react";
-import { Text, Billboard } from "@react-three/drei"
-import { useDrag } from "react-use-gesture"
+import { Text, Billboard, OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
 
-function Node({ initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
+function Node({ dragging, initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
     const store = useCreateStore();
-    
-    const {gl, camera, size, viewport} = useThree();
-    const aspect = size.width / viewport.width;
-    
-    let name = "";
 
-    // BEGIN DRAG
-
-
-    // scene.add(checkerboard)
-    // scene.add(checker);
+    const { gl, camera } = useThree();
 
     useEffect(() => {
+        setSelect([index, store])
+
         if (mesh.current !== null && model !== null) {
+            mesh.current.position.set(initialPos.x, 0, initialPos.z);
 
             const eventControls = new EventsControls(camera, gl.domElement);
             // eventControls.map = checkerboard;
-        
+
             eventControls.attachEvent('mouseOver', function () {
                 setDragging(true);
+                setHover(true);
             })
-        
+
             eventControls.attachEvent('mouseOut', function () {
                 setDragging(false);
+                setHover(false);
             })
-        
+
+            eventControls.attachEvent('mouseUp', function () {
+                // setDragging(!dragfging);
+                setDragging(!dragging);
+                setDragging(!dragging);
+                setHover(true);
+            })
+
             eventControls.attachEvent('dragAndDrop', function () {
+                console.log("Position: ")
+                console.log(this.focused);
+                console.log(mesh.current);
                 this.focused.position.y = this.previous.y;
             });
 
@@ -46,29 +50,21 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect, setDra
 
             eventControls.map = model.current;
         }
-    }, [camera, gl.domElement, setDragging, model])
+    }, [dragging, initialPos, index, setSelect, store, camera, gl.domElement, setDragging, model])
 
     // END DRAG
 
-    // [ name, position ] = useControls(
-    //     () => ({
-    //         name: "Waypoint " + index,
-    //         position: {
-    //             value: [initialPos.x, initialPos.z],
-    //             onChange: (val) => {
-    //                 localPos = val;
-    //             },
-    //             step: 1
-    //         },
-
-    //     }),
-    //     { store }
+    let [{ name }] = useControls(
+        () => ({
+            name: "Waypoint " + index
+        }),
+        { store }
 
 
-    // )
+    )
 
     // const bind = useDrag(({ offset: [x, y]}) => {
-        
+
 
     //     const[,,z] = position;
 
@@ -77,18 +73,28 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect, setDra
     //     setPosition([x / aspect, -y / aspect, z]);
     // }, { pointerEvents: true });
 
-    useEffect(() => {
-        setSelect([index, store])
-    }, [index, store, setSelect, setLocalSelected])
-
     const mesh = useRef(null)
     const [hovered, setHover] = React.useState(false)
+
+    const billboard = useRef(null);
+
+    if (mesh.current !== null)
+        console.log(mesh.current.position)
+
+    function getMeshPos() {
+        const currentPos = mesh.current.position;
+
+        return [currentPos.x, currentPos.y + 1.5, currentPos.z];
+    }
 
     return (
         <>
             <Billboard
+                ref={billboard}
+                position={mesh.current !== null ? getMeshPos() : [0, 1, 0]}
                 follow={true}
                 args={[0, 0]}
+                enabled={!selected}
             >
                 <Text
                     color="#ededed"
@@ -98,10 +104,12 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect, setDra
                     outlineBlur={"10%"}
                     outlineColor={"#000000"}
                     textAlign="left"
+
+                    enabled={!selected}
                     // font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
                     anchorX="center"
                     anchorY="middle">
-                    {name}
+                    {name}{mesh.current !== null ? "True" : "False"}
                 </Text>
             </Billboard>
 
@@ -109,8 +117,6 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect, setDra
                 // { ...bind() }
                 ref={mesh}
                 scale={1}
-                onPointerOver={(_event) => setHover(true)}
-                onPointerOut={(_event) => setHover(false)}
                 onClick={(_event) => { setSelect([index, store]) }}
             >
                 <cylinderGeometry args={[1, 1, 1]} />
@@ -131,15 +137,29 @@ export class UIManagerRenderer extends React.Component {
             markerCreationMode: false,
             selection: null,
             store: null,
+            camera: null,
             uiManager: null,
-            
+
         }
+    }
+
+    setCamera = (val) => {
+        this.setState({
+            nodes: this.state.nodes,
+            uiManager: this.state.uiManager,
+            camera: val,
+            dragging: this.state.dragging,
+            markerCreationMode: this.state.markerCreationMode,
+            selection: this.state.selection,
+            store: this.state.store
+        });
     }
 
     setDragging = (val) => {
         this.setState({
             nodes: this.state.nodes,
             uiManager: this.state.uiManager,
+            camera: this.state.camera,
             dragging: val,
             markerCreationMode: this.state.markerCreationMode,
             selection: this.state.selection,
@@ -153,6 +173,7 @@ export class UIManagerRenderer extends React.Component {
             this.setState({
                 nodes: [...this.state.nodes, node],
                 uiManager: this.state.uiManager,
+                camera: this.state.camera,
                 dragging: this.state.dragging,
                 markerCreationMode: this.state.markerCreationMode,
                 selection: this.state.selection,
@@ -165,6 +186,7 @@ export class UIManagerRenderer extends React.Component {
         this.setState({
             nodes: this.state.nodes,
             uiManager: this.state.uiManager,
+            camera: this.state.camera,
             dragging: this.state.dragging,
             markerCreationMode: !this.state.markerCreationMode,
             selection: this.state.selection,
@@ -176,6 +198,7 @@ export class UIManagerRenderer extends React.Component {
         this.setState({
             nodes: this.state.nodes,
             uiManager: manager,
+            camera: this.state.camera,
             dragging: this.state.dragging,
             markerCreationMode: this.state.markerCreationMode,
             selection: this.state.selection,
@@ -185,26 +208,34 @@ export class UIManagerRenderer extends React.Component {
 
     render() {
         console.log("Drawing with model of :")
+        console.log(this.state);
         console.log(this.props);
+        console.log("doo doo dat ad")
 
-        return (this.state.nodes.map((v, i) => (
-            <Node
-                key={i}
-                initialPos={v}
-                selected={this.state.selection === i}
-                setSelect={this.state.uiManager.setSelection}
-                setLocalSelected={this.setLocalSelected}
-                setDragging={this.setDragging}
-                model={this.props.tiles}
-                index={i}
-            />
-        )))
+        return <>
+            {(this.state.nodes.map((v, i) => (
+                <Node
+                    key={i}
+                    initialPos={v}
+                    selected={this.state.selection === i}
+                    setSelect={this.state.uiManager.setSelection}
+                    setLocalSelected={this.setLocalSelected}
+                    dragging={this.state.dragging}
+                    setDragging={this.setDragging}
+                    model={this.props.tiles}
+                    index={i}
+                />
+            )))}
+            {<OrbitControls enabled={!this.state.dragging}/>}
+            {/* {this.props.camera() !== null ?? <OrbitControls camera={this.props.camera().current} />} */}
+            
+        </>
     }
 }
 
 export default function UIManager(props) {
     const [[selection, store], setSelection] = React.useState([-1, null]);
-    const [buttonSelected, setButtonSelected] = React.useState(false); 
+    const [buttonSelected, setButtonSelected] = React.useState(false);
     const stateRef = useRef();
 
     stateRef.current = { props };
@@ -239,7 +270,7 @@ export default function UIManager(props) {
     }, [props.uiRenderer, props.uiRef, selection])
 
     // This is absolutely cursed but is needed for the automatic css injection
-    useControls({"Remove All Markers": button(() => {})})
+    useControls({ "Remove All Markers": button(() => { }) })
 
     const waypointButton = useRef();
 
@@ -251,8 +282,8 @@ export default function UIManager(props) {
                         <div className={"leva-c-bduird"}>
                             <button
                                 ref={waypointButton}
-                                onClick={() => { setButtonSelected(!buttonSelected); stateRef.current.props.uiRenderer.toggleCreationMode()}}
-                                style={{color: "#ededed", backgroundColor: (buttonSelected ? "#ff003c" : "#007bff") }}
+                                onClick={() => { setButtonSelected(!buttonSelected); stateRef.current.props.uiRenderer.toggleCreationMode() }}
+                                style={{ color: "#ededed", backgroundColor: (buttonSelected ? "#ff003c" : "#007bff") }}
                                 className={"leva-c-fOioiK"}>{buttonSelected ? "Exit Waypoint Creation" : "Enter Waypoint Creation"}
                             </button>
                         </div>
@@ -262,7 +293,7 @@ export default function UIManager(props) {
 
             <LevaPanel store={store} fill flat titleBar={false} />
             <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
-            
+
         </div>
     );
 }

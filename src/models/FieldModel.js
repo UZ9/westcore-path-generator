@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import React, { useEffect, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
-import { useMemo } from 'react'
 
 const transparentMat = new THREE.MeshLambertMaterial({
   color: 0x000000,

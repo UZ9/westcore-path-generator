@@ -1,16 +1,12 @@
 import * as THREE from 'three'
 import React, { useRef, Suspense} from 'react'
-import { applyProps, Canvas, useThree } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 
 import Model from "./models/FieldModel"
-import { softShadows, OrbitControls } from '@react-three/drei'
-import { EventsControls } from "./controls/EventsControls"
-
+import { softShadows} from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import UIManager, { UIManagerRenderer } from './ui/UIManager'
-import DragItem from './controls/DragItem'
-import DragHandler from './controls/DragHandler'
 
 softShadows();
 
@@ -28,8 +24,7 @@ export default function App() {
 
   const d = 1000;
   const camera = useRef<THREE.PerspectiveCamera>(null!);
-  // const uiRenderer = useRef<UIManagerRenderer>(null!);
-  // const ui = React.createRef<UIManager>(null!);
+
   const markerManager = useRef<MarkerManager>(null!);
 
   // const container = document.createElement("div");
@@ -40,8 +35,6 @@ export default function App() {
   sphereGeometry.scale(-1, 1, 1);
 
   const backgroundTexture = new THREE.TextureLoader().load(process.env.PUBLIC_URL + "/background.jpg");
-
-  // const te = new THREE.OrbitControls(camera);
 
   // backgroundTexture.wrapS = THREE.RepeatWrapping;
   // backgroundTexture.wrapT = THREE.RepeatWrapping;
@@ -55,22 +48,30 @@ export default function App() {
   console.log("Redrawing app:")
   console.log(tiles);
 
+  if (uiRenderer !== null && uiRenderer.state.camera == null) {
+    uiRenderer.setCamera(camera);
+  }
+
+  function getCamera() {
+    return camera;
+  }
+
 
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
 
       <Canvas raycaster={{ filter: intersectionsFilter }} gl={{ shadowMapEnabled: true, shadowMapType: THREE.BasicShadowMap, antialias: true, pixelRatio: window.devicePixelRatio, toneMapping: THREE.ACESFilmicToneMapping }} camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
-
+        <></>
         {/* <DragHandler camera={camera}/> */}
-        <UIManagerRenderer ref={setUiRenderer} tiles={tiles}/>
+        <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles}/>
 
 
         {/* <ambientLight intensity={0.15} /> */}
         <pointLight position={[100, 50, 0]} shadowCameraLeft={-d} shadowCameraRight={d} shadowCameraTop={d} shadowCameraBottom={-d} shadowMapHeight={1024} shadowMapWidth={1024} castShadow={true} intensity={2} />
 
 
-        <OrbitControls camera={camera.current} />
+        {/* <OrbitControls camera={camera.current} /> */}
 
         <mesh geometry={sphereGeometry} material={sphereMaterial} />
 

@@ -21,7 +21,6 @@ export default function App() {
   const [tiles, setTiles] = React.useState<THREE.Mesh[] | null>(null!)
   const [uiRenderer, setUiRenderer] = React.useState<UIManagerRenderer | null>(null);
 
-  const d = 1000;
   const camera = useRef<THREE.PerspectiveCamera>(null!);
 
   const markerManager = useRef<MarkerManager>(null!);

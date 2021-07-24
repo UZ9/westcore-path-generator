@@ -1,6 +1,7 @@
 import * as THREE from 'three'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
+import { useMemo } from 'react'
 
 const transparentMat = new THREE.MeshLambertMaterial({
   color: 0x000000,
@@ -12,15 +13,15 @@ const transparentMat = new THREE.MeshLambertMaterial({
 })
 
 var testMat = new THREE.ShaderMaterial({
-  uniforms: 
-  { 
-    "s":   { type: "f", value: -0.5},
-    "b":   { type: "f", value: 1.0},
-    "p":   { type: "f", value: 1.0 },
+  uniforms:
+  {
+    "s": { type: "f", value: -0.5 },
+    "b": { type: "f", value: 1.0 },
+    "p": { type: "f", value: 1.0 },
     glowColor: { type: "c", value: new THREE.Color(0xff800) }
   },
-  vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-  fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+  vertexShader: document.getElementById('vertexShader').textContent,
+  fragmentShader: document.getElementById('fragmentShader').textContent,
   side: THREE.FrontSide,
   blending: THREE.AdditiveBlending,
   transparent: false
@@ -28,11 +29,12 @@ var testMat = new THREE.ShaderMaterial({
 const matDict = {};
 
 export default function Model(props) {
-
+  
+  const tileMesh = useRef(null);
   // props.nodes.push(<Node position={[Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1)]}/>)
   // props.nodes.push(<Node position={[Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1)]}/>)
 
-  const sayClicked = (clicked) => {  
+  const sayClicked = (clicked) => {
     clicked.stopPropagation();
     // console.log(props.nodes);
     // props.nodes.push(<Marker key={i++} position={[Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1), Math.floor((Math.random() * 50) + 1)]}/>)
@@ -40,14 +42,14 @@ export default function Model(props) {
 
       // Cache old material
       // matDict[clicked.object.uuid] = clicked.object.material;
-  
+
       // clicked.object.material = testMat;
-  
+
       console.log("UI:")
       console.log(props);
 
       props.ui(clicked.point);
-      
+
     } else {
       // Restore old material
       clicked.object.material = matDict[clicked.object.uuid]
@@ -61,6 +63,9 @@ export default function Model(props) {
 
   const group = useRef()
   const { nodes, materials } = useGLTF(process.env.PUBLIC_URL + '/fieldmodel.gltf')
+
+
+  
 
   const tiles = [
     nodes.FieldTile000,
@@ -105,6 +110,10 @@ export default function Model(props) {
     tile.material = tileMat;
   })
 
+  // tiles[0].material = new THREE.MeshPhongMaterial({
+  //   color: 0xff0000
+  // })
+
 
 
   nodes.Perimeter_Lexan_Wall_Panel000.material = transparentMat;
@@ -119,6 +128,15 @@ export default function Model(props) {
   nodes.Perimeter_Lexan_Wall_Panel009.material = transparentMat;
   nodes.Perimeter_Lexan_Wall_Panel010.material = transparentMat;
   nodes.Perimeter_Lexan_Wall_Panel011.material = transparentMat;
+
+  useEffect(() => {
+    if (props.tiles === null) {
+      props.setTiles(tileMesh);
+    }
+
+    console.log("Set tile ");
+    console.log(tileMesh);
+  })
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -223,6 +241,14 @@ export default function Model(props) {
         rotation={[Math.PI / 2, 0, Math.PI]}
       />
       <mesh
+        rotation={[Math.PI / 2, 0, 0]}
+        geometry={tiles[0].geometry} // yikes
+        scale={[6.3, 6.2 ,1]}
+        onClick={sayClicked}
+        ref={tileMesh}
+        position={[0, 0, 0]}
+        material={tileMat} />
+      {/* <mesh
         geometry={nodes.FieldTile000.geometry}
         material={nodes.FieldTile000.material}
         onClick={sayClicked}
@@ -473,7 +499,7 @@ export default function Model(props) {
         onClick={sayClicked}
         position={[58.91, -0.31, 58.91]}
         rotation={[Math.PI / 2, 0, 0]}
-      />
+      /> */}
       <mesh
         geometry={nodes.Perimeter_Lexan_Wall_Panel000.geometry}
         material={nodes.Perimeter_Lexan_Wall_Panel000.material}

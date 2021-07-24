@@ -1,24 +1,81 @@
 import { button, Leva, LevaPanel, useControls, useCreateStore } from "leva";
 import React from "react";
+import * as THREE from 'three'
 import { useEffect, useRef } from "react";
 import { Text, Billboard } from "@react-three/drei"
+import { useDrag } from "react-use-gesture"
+import { useThree } from "@react-three/fiber"
+import { EventsControls } from "../controls/EventsControls";
 
-function Node({ initialPos, index, selected, setLocalSelected, setSelect }) {
+function Node({ initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
     const store = useCreateStore();
+    
+    const {gl, camera, size, viewport} = useThree();
+    const aspect = size.width / viewport.width;
+    
+    let name = "";
 
-    const [{ name, position }] = useControls(
-        () => ({
-            name: "Waypoint " + index,
-            position: {
-                value: [initialPos.x, initialPos.z],
-                step: 1
-            },
-
-        }),
-        { store }
+    // BEGIN DRAG
 
 
-    )
+    // scene.add(checkerboard)
+    // scene.add(checker);
+
+    useEffect(() => {
+        if (mesh.current !== null && model !== null) {
+
+            const eventControls = new EventsControls(camera, gl.domElement);
+            // eventControls.map = checkerboard;
+        
+            eventControls.attachEvent('mouseOver', function () {
+                setDragging(true);
+            })
+        
+            eventControls.attachEvent('mouseOut', function () {
+                setDragging(false);
+            })
+        
+            eventControls.attachEvent('dragAndDrop', function () {
+                this.focused.position.y = this.previous.y;
+            });
+
+            eventControls.attach(mesh.current);
+
+            console.log("Setting map to ");
+            console.log(model.current);
+
+            eventControls.map = model.current;
+        }
+    }, [camera, gl.domElement, setDragging, model])
+
+    // END DRAG
+
+    // [ name, position ] = useControls(
+    //     () => ({
+    //         name: "Waypoint " + index,
+    //         position: {
+    //             value: [initialPos.x, initialPos.z],
+    //             onChange: (val) => {
+    //                 localPos = val;
+    //             },
+    //             step: 1
+    //         },
+
+    //     }),
+    //     { store }
+
+
+    // )
+
+    // const bind = useDrag(({ offset: [x, y]}) => {
+        
+
+    //     const[,,z] = position;
+
+    //     console.log([x, y, z, aspect]);
+
+    //     setPosition([x / aspect, -y / aspect, z]);
+    // }, { pointerEvents: true });
 
     useEffect(() => {
         setSelect([index, store])
@@ -30,7 +87,6 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect }) {
     return (
         <>
             <Billboard
-                position={[position[0], 2, position[1]]}
                 follow={true}
                 args={[0, 0]}
             >
@@ -50,7 +106,7 @@ function Node({ initialPos, index, selected, setLocalSelected, setSelect }) {
             </Billboard>
 
             <mesh
-                position={[position[0], 0, position[1]]}
+                // { ...bind() }
                 ref={mesh}
                 scale={1}
                 onPointerOver={(_event) => setHover(true)}
@@ -71,11 +127,24 @@ export class UIManagerRenderer extends React.Component {
 
         this.state = {
             nodes: [],
+            dragging: false,
             markerCreationMode: false,
             selection: null,
             store: null,
-            uiManager: null
+            uiManager: null,
+            
         }
+    }
+
+    setDragging = (val) => {
+        this.setState({
+            nodes: this.state.nodes,
+            uiManager: this.state.uiManager,
+            dragging: val,
+            markerCreationMode: this.state.markerCreationMode,
+            selection: this.state.selection,
+            store: this.state.store
+        });
     }
 
     addNode(node) {
@@ -84,6 +153,7 @@ export class UIManagerRenderer extends React.Component {
             this.setState({
                 nodes: [...this.state.nodes, node],
                 uiManager: this.state.uiManager,
+                dragging: this.state.dragging,
                 markerCreationMode: this.state.markerCreationMode,
                 selection: this.state.selection,
                 store: this.state.store
@@ -95,6 +165,7 @@ export class UIManagerRenderer extends React.Component {
         this.setState({
             nodes: this.state.nodes,
             uiManager: this.state.uiManager,
+            dragging: this.state.dragging,
             markerCreationMode: !this.state.markerCreationMode,
             selection: this.state.selection,
             store: this.state.store
@@ -105,6 +176,7 @@ export class UIManagerRenderer extends React.Component {
         this.setState({
             nodes: this.state.nodes,
             uiManager: manager,
+            dragging: this.state.dragging,
             markerCreationMode: this.state.markerCreationMode,
             selection: this.state.selection,
             store: this.state.store
@@ -112,6 +184,9 @@ export class UIManagerRenderer extends React.Component {
     }
 
     render() {
+        console.log("Drawing with model of :")
+        console.log(this.props);
+
         return (this.state.nodes.map((v, i) => (
             <Node
                 key={i}
@@ -119,6 +194,8 @@ export class UIManagerRenderer extends React.Component {
                 selected={this.state.selection === i}
                 setSelect={this.state.uiManager.setSelection}
                 setLocalSelected={this.setLocalSelected}
+                setDragging={this.setDragging}
+                model={this.props.tiles}
                 index={i}
             />
         )))

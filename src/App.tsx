@@ -1,13 +1,16 @@
 import * as THREE from 'three'
 import React, { useRef, Suspense} from 'react'
-import { Canvas } from '@react-three/fiber'
+import { applyProps, Canvas, useThree } from '@react-three/fiber'
 
 import Model from "./models/FieldModel"
-import { OrbitControls, softShadows } from '@react-three/drei'
+import { softShadows, OrbitControls } from '@react-three/drei'
+import { EventsControls } from "./controls/EventsControls"
+
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import UIManager, { UIManagerRenderer } from './ui/UIManager'
-
+import DragItem from './controls/DragItem'
+import DragHandler from './controls/DragHandler'
 
 softShadows();
 
@@ -20,6 +23,7 @@ export default function App() {
   const uiRef = useRef();
   const ui = uiRef.current;
 
+  const [tiles, setTiles] = React.useState<THREE.Mesh[] | null>(null!)
   const [uiRenderer, setUiRenderer] = React.useState<UIManagerRenderer | null>(null);
 
   const d = 1000;
@@ -37,6 +41,8 @@ export default function App() {
 
   const backgroundTexture = new THREE.TextureLoader().load(process.env.PUBLIC_URL + "/background.jpg");
 
+  // const te = new THREE.OrbitControls(camera);
+
   // backgroundTexture.wrapS = THREE.RepeatWrapping;
   // backgroundTexture.wrapT = THREE.RepeatWrapping;
   // backgroundTexture.repeat.set(3, 3);
@@ -46,31 +52,36 @@ export default function App() {
     // color: "black"
   })
 
+  console.log("Redrawing app:")
+  console.log(tiles);
+
+
+
   return (
     <div style={{ width: "100%", height: "100%" }}>
 
       <Canvas raycaster={{ filter: intersectionsFilter }} gl={{ shadowMapEnabled: true, shadowMapType: THREE.BasicShadowMap, antialias: true, pixelRatio: window.devicePixelRatio, toneMapping: THREE.ACESFilmicToneMapping }} camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
 
-
-        <UIManagerRenderer ref={setUiRenderer}/>
+        {/* <DragHandler camera={camera}/> */}
+        <UIManagerRenderer ref={setUiRenderer} tiles={tiles}/>
 
 
         {/* <ambientLight intensity={0.15} /> */}
         <pointLight position={[100, 50, 0]} shadowCameraLeft={-d} shadowCameraRight={d} shadowCameraTop={d} shadowCameraBottom={-d} shadowMapHeight={1024} shadowMapWidth={1024} castShadow={true} intensity={2} />
 
 
-
+        <OrbitControls camera={camera.current} />
 
         <mesh geometry={sphereGeometry} material={sphereMaterial} />
 
-        <OrbitControls camera={camera.current} />
+        
 
         <MarkerManager ref={markerManager} />
 
         
 
         <Suspense fallback={null}>
-          <Model ui={ui} />
+          <Model ui={ui} tiles={tiles} setTiles={setTiles} />
         </Suspense>
 
       </Canvas>

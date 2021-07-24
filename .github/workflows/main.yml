@@ -1,4 +1,4 @@
-name: Node.js Operations
+name: CI
 
 on:
   push:

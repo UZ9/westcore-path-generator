@@ -50,7 +50,8 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
 
             eventControls.map = model.current;
         }
-    }, [dragging, initialPos, index, setSelect, store, camera, gl.domElement, setDragging, model])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialPos, index, setSelect, store, camera, gl.domElement, setDragging, model])
 
     // END DRAG
 

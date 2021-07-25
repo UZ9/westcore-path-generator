@@ -33,11 +33,14 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 // setDragging(!dragfging);
                 setDragging(!dragging);
                 setDragging(!dragging);
+                mesh.current.material.opacity = 0.75;
                 setHover(true);
             })
 
             eventControls.attachEvent('dragAndDrop', function () {
-                this.focused.position.y = this.previous.y;
+                mesh.current.material.opacity = 0.3;
+                // this.focused.position.x = 10 * Math.round( ( this.focused.position.x ) / 10 );
+                // this.focused.position.z = 10 * Math.round( ( this.focused.position.z ) / 10 );
             });
 
             eventControls.attach(mesh.current);
@@ -100,7 +103,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 onClick={(_event) => { setSelect([index, store]); }}
             >
                 <cylinderGeometry args={[1, 1, 1]} />
-                <meshStandardMaterial color={selected ? 'green' : hovered ? 'yellow' : 'blue'} />
+                <meshStandardMaterial transparent={true} opacity={0.75} color={selected ? 'green' : hovered ? 'yellow' : 'blue'} />
             </mesh>
         </>
     )

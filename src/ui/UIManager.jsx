@@ -38,9 +38,9 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
             })
 
             eventControls.attachEvent('dragAndDrop', function () {
-                mesh.current.material.opacity = 0.3;
-                // this.focused.position.x = 10 * Math.round( ( this.focused.position.x ) / 10 );
-                // this.focused.position.z = 10 * Math.round( ( this.focused.position.z ) / 10 );
+                // mesh.current.material.opacity = 0.3;
+                this.focused.position.x = 11.855 * Math.round( ( this.focused.position.x ) / 11.855 );
+                this.focused.position.z = 11.855 * Math.round( ( this.focused.position.z ) / 11.855 );
             });
 
             eventControls.attach(mesh.current);

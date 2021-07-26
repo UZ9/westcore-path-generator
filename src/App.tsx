@@ -3,7 +3,7 @@ import React, { useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 
 import Model from "./models/FieldModel"
-import { softShadows } from '@react-three/drei'
+import { Box, softShadows } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import UIManager, { UIManagerRenderer } from './ui/UIManager'
@@ -50,9 +50,21 @@ export default function App() {
       <Canvas raycaster={{ filter: intersectionsFilter }} gl={{ shadowMapEnabled: true, shadowMapType: THREE.BasicShadowMap, antialias: true, pixelRatio: window.devicePixelRatio, toneMapping: THREE.ACESFilmicToneMapping }} camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
         <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles} />
 
-        <pointLight position={[100, 50, 0]} intensity={2} />
+        <ambientLight intensity={0.15} />
+        <directionalLight
+          position={[100, 100, -100]}
+          shadow-mapSize-width={4096}
+          shadow-mapSize-height={4096}
+          intensity={0.65}
+          shadow-camera-left={-15}
+          shadow-camera-right={15}
+          shadow-camera-top={15}
+          shadow-camera-bottom={-15}
+          castShadow
+        />
 
         <mesh geometry={sphereGeometry} material={sphereMaterial} />
+        <Box position={[11.855*-2, 0, 0]} args={[1, 1, 1]}/>
 
         <MarkerManager ref={markerManager} />
 

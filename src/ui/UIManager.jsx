@@ -33,7 +33,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 // setDragging(!dragfging);
                 setDragging(!dragging);
                 setDragging(!dragging);
-                mesh.current.material.opacity = 0.75;
+                mesh.current.material.opacity = 1;
                 setHover(true);
             })
 
@@ -67,7 +67,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
     function getMeshPos() {
         const currentPos = mesh.current.position;
 
-        return [currentPos.x, currentPos.y + 1.5, currentPos.z];
+        return [currentPos.x, currentPos.y + 2.5, currentPos.z];
     }
 
     return (
@@ -103,7 +103,8 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 onClick={(_event) => { setSelect([index, store]); }}
             >
                 <cylinderGeometry args={[1, 1, 1]} />
-                <meshStandardMaterial transparent={true} opacity={0.75} color={selected ? 'green' : hovered ? 'yellow' : 'blue'} />
+                
+                <meshStandardMaterial metalness={0.5} transparent={true} opacity={1} color={selected ? 'green' : hovered ? 'yellow' : 'blue'} />
             </mesh>
         </>
     )

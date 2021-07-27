@@ -3,12 +3,12 @@ import React, { useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 
 import Model from "./models/FieldModel"
-import { Box, softShadows } from '@react-three/drei'
+import { Box } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import UIManager, { UIManagerRenderer } from './ui/UIManager'
 
-softShadows();
+// softShadows();
 
 function intersectionsFilter(intersections: THREE.Intersection[]) {
   return intersections?.length ? [intersections[0]] : intersections
@@ -47,24 +47,31 @@ export default function App() {
   return (
     <div style={{ width: "100%", height: "100%" }}>
 
-      <Canvas raycaster={{ filter: intersectionsFilter }} gl={{ shadowMapEnabled: true, shadowMapType: THREE.BasicShadowMap, antialias: true, pixelRatio: window.devicePixelRatio, toneMapping: THREE.ACESFilmicToneMapping }} camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
+      <Canvas
+        shadows={true}
+        raycaster={{ filter: intersectionsFilter }}
+        gl={{ shadowMapEnabled: true, shadowMapType: THREE.PCFShadowMap, antialias: true, pixelRatio: window.devicePixelRatio }}
+        camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
+
+
+
         <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles} />
 
-        <ambientLight intensity={0.15} />
+        <ambientLight intensity={0.25} />
         <directionalLight
-          position={[100, 100, -100]}
+          position={[200, 200, -100]}
           shadow-mapSize-width={4096}
           shadow-mapSize-height={4096}
           intensity={0.65}
-          shadow-camera-left={-15}
-          shadow-camera-right={15}
-          shadow-camera-top={15}
-          shadow-camera-bottom={-15}
-          castShadow
+          shadow-camera-left={-100}
+          shadow-camera-right={100}
+          shadow-camera-top={80}
+          shadow-camera-bottom={-80}
+          castShadow={true}
         />
 
         <mesh geometry={sphereGeometry} material={sphereMaterial} />
-        <Box position={[11.855*-2, 0, 0]} args={[1, 1, 1]}/>
+        <Box position={[100, 200, 0]} args={[1, 1, 1]} />
 
         <MarkerManager ref={markerManager} />
 

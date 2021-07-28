@@ -48,6 +48,8 @@ export const EventsControls = function (camera, domElement) {
 	this.event = null;
 	this.offset = new THREE.Vector3();
 	this.offsetUse = false;
+	
+	this._altUsed = false;
 
 	this._mouse = new THREE.Vector2();
 	this.mouse = new THREE.Vector2();
@@ -263,6 +265,8 @@ export const EventsControls = function (camera, domElement) {
 
 		if (_this.enabled && (_onclickFlag || _dragAndDropFlag)) {
 			if (_this.focused) { return; }
+			if (event.altKey) _this._altUsed = true;
+			
 			_this._raySet();
 			_this.intersects = _this.raycaster.intersectObjects(_this.objects, true);
 
@@ -285,7 +289,7 @@ export const EventsControls = function (camera, domElement) {
 
 				}
 
-				_this.onclick();
+				_this.onclick(event);
 
 			}
 			else {
@@ -322,7 +326,7 @@ export const EventsControls = function (camera, domElement) {
 
 				}
 
-				_this.onclick();
+				_this.onclick(event);
 
 			}
 			else {
@@ -349,7 +353,7 @@ export const EventsControls = function (camera, domElement) {
 				}
 				catch (err) { }
 
-				_this.dragAndDrop();
+				_this.dragAndDrop(_this._altUsed);
 			}
 		}
 		else {
@@ -384,6 +388,7 @@ export const EventsControls = function (camera, domElement) {
 		if (_this.enabled) {
 			if (_this.focused) {
 
+				_this._altUsed = false;
 				_this.mouseUp();
 				_DisplaceFocused = null;
 				_this.focused = null;
@@ -400,6 +405,5 @@ export const EventsControls = function (camera, domElement) {
 	this.container.addEventListener('mouseup', onContainerMouseUp, {passive: true, capture: true});       // мышка отпущена
 	this.container.addEventListener('touchstart', onContainerTouchDown, {passive: true, capture: true});
 	this.container.addEventListener('touchmove', getTouchPos, {passive: true, capture: true});
-
 
 };

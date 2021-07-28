@@ -4,13 +4,19 @@ import { useEffect, useRef } from "react";
 import { Text, Billboard, OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
+import { tile, tileGrid } from "../models/materials";
 
 function Node({ dragging, initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
     const store = useCreateStore();
 
+    const vertexShader = document.getElementById('vertexShader').textContent;
+    const fragmentShader = document.getElementById('fragmentShader').textContent;
+
+
     const { gl, camera } = useThree();
 
     useEffect(() => {
+
         setSelect([index, store])
 
         if (mesh.current !== null && model !== null) {
@@ -22,11 +28,22 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
             eventControls.attachEvent('mouseOver', function () {
                 setDragging(true);
                 setHover(true);
+
+
+            })
+
+            eventControls.attachEvent('onclick', function (event) {
+                console.log(event);
+
+                if (event.altKey)
+                    model.current.material = tileGrid(fragmentShader, vertexShader)
             })
 
             eventControls.attachEvent('mouseOut', function () {
                 setDragging(false);
                 setHover(false);
+
+                currentlyDragging.current = false;
             })
 
             eventControls.attachEvent('mouseUp', function () {
@@ -34,13 +51,28 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 setDragging(!dragging);
                 setDragging(!dragging);
                 mesh.current.material.opacity = 1;
+                model.current.material = tile
+
                 setHover(true);
+
+                currentlyDragging.current = false;
             })
 
-            eventControls.attachEvent('dragAndDrop', function () {
-                // mesh.current.material.opacity = 0.3;
-                this.focused.position.x = 11.855 * Math.round( ( this.focused.position.x ) / 11.855 );
-                this.focused.position.z = 11.855 * Math.round( ( this.focused.position.z ) / 11.855 );
+            eventControls.attachEvent('dragAndDrop', function (altUsed) {
+                currentlyDragging.current = true;
+
+                // If alt is being used, snap to the grid
+                if (altUsed) {
+                    // Switch to the tile grid shader if it hasn't already
+                    if (model.current.material === tile)
+                        model.current.material = tileGrid(fragmentShader, vertexShader)
+
+                    this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
+                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
+                } else {
+                    // Update marker position to wherever the mouse pointer is currently located
+                    this.focused.position.y = this.previous.y;
+                }
             });
 
             eventControls.attach(mesh.current);
@@ -58,6 +90,8 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
         }),
         { store }
     )
+
+    const currentlyDragging = useRef(false);
 
     const mesh = useRef(null)
     const [hovered, setHover] = React.useState(false)
@@ -77,9 +111,10 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 position={mesh.current !== null ? getMeshPos() : [0, 1, 0]}
                 follow={true}
                 args={[0, 0]}
-                // enabled={!selected}
+            // enabled={!selected}
             >
                 <Text
+                    enabled={!currentlyDragging.current}
                     color="#ededed"
                     fontSize={1.5}
                     maxWidth={60}
@@ -103,7 +138,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 onClick={(_event) => { setSelect([index, store]); }}
             >
                 <cylinderGeometry args={[1, 1, 1]} />
-                
+
                 <meshStandardMaterial metalness={0.5} transparent={true} opacity={1} color={selected ? 'green' : hovered ? 'yellow' : 'blue'} />
             </mesh>
         </>

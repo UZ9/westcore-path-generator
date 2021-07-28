@@ -49,4 +49,19 @@ export const platformMat = new THREE.MeshLambertMaterial({
     opacity: 0.4,
     wireframe: false,
     side: THREE.DoubleSide,
-  })
+})
+
+const tileGridUniforms = {
+    // Resolution of the grid
+    // .335 - exact resolution for 6x6 grid
+    resolution: { value: .335 }
+}
+
+export const tileGrid = (fragmentShader, vertexShader) => new THREE.ShaderMaterial({
+    side: THREE.FrontSide,
+    uniforms: tileGridUniforms,
+    fragmentShader: fragmentShader,
+    vertexShader: vertexShader
+})
+
+

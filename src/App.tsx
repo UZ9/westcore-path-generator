@@ -53,8 +53,6 @@ export default function App() {
         gl={{ shadowMapEnabled: true, shadowMapType: THREE.PCFShadowMap, antialias: true, pixelRatio: window.devicePixelRatio }}
         camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
 
-
-
         <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles} />
 
         <ambientLight intensity={0.25} />

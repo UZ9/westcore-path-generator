@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { Text, Billboard, OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
-import { tile, tileGrid } from "../models/materials";
+import { tileMat, tileGridMat } from "../models/materials";
 
 function Node({ dragging, initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
     const store = useCreateStore();
@@ -36,7 +36,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 console.log(event);
 
                 if (event.altKey)
-                    model.current.material = tileGrid(fragmentShader, vertexShader)
+                    model.current.material = tileGridMat(fragmentShader, vertexShader)
             })
 
             eventControls.attachEvent('mouseOut', function () {
@@ -51,7 +51,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 setDragging(!dragging);
                 setDragging(!dragging);
                 mesh.current.material.opacity = 1;
-                model.current.material = tile
+                model.current.material = tileMat
 
                 setHover(true);
 
@@ -64,8 +64,8 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                 // If alt is being used, snap to the grid
                 if (altUsed) {
                     // Switch to the tile grid shader if it hasn't already
-                    if (model.current.material === tile)
-                        model.current.material = tileGrid(fragmentShader, vertexShader)
+                    if (model.current.material === tileMat)
+                        model.current.material = tileGridMat(fragmentShader, vertexShader)
 
                     this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
                     this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);

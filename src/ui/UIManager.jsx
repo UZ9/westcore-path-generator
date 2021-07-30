@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { button, Leva, LevaPanel, useControls, useCreateStore } from "leva";
 import React from "react";
 import { useEffect, useRef } from "react";
-import { Text, Billboard, OrbitControls, calcPosFromAngles } from "@react-three/drei"
+import { Text, Billboard, OrbitControls } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
 import { tileMat, tileGridMat } from "../models/materials";

@@ -1,26 +1,48 @@
+import * as THREE from "three"
 import { button, Leva, LevaPanel, useControls, useCreateStore } from "leva";
 import React from "react";
 import { useEffect, useRef } from "react";
-import { Text, Billboard, OrbitControls } from "@react-three/drei"
+import { Text, Billboard, OrbitControls, calcPosFromAngles } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
 import { tileMat, tileGridMat } from "../models/materials";
 
-function Node({ dragging, initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
+function Node({ dragging, initialName, initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
     const store = useCreateStore();
 
     const vertexShader = document.getElementById('vertexShader').textContent;
     const fragmentShader = document.getElementById('fragmentShader').textContent;
 
-
     const { gl, camera } = useThree();
+
+    const currentlyDragging = useRef(false);
+
+    const mesh = useRef(null)
+    const [hovered, setHover] = React.useState(false)
+
+    const billboard = useRef(null);
+
+    let [{ name, position }, set] = useControls(
+        () => ({
+            name: "Waypoint " + index,
+            position: [0, 0, 0]
+        }),
+        { store }
+    )
 
     useEffect(() => {
 
         setSelect([index, store])
 
         if (mesh.current !== null && model !== null) {
-            mesh.current.position.set(initialPos.x, 0, initialPos.z);
+            mesh.current.position.set(initialPos.x, initialPos.y, initialPos.z);
+
+            console.log("Setting position to ");
+            console.log(initialPos);
+            set({position: [initialPos.x, initialPos.y, initialPos.z], name: initialName})
+
+            console.log("psotion now");
+            console.log(position);
 
             const eventControls = new EventsControls(camera, gl.domElement);
             // eventControls.map = checkerboard;
@@ -28,12 +50,9 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
             eventControls.attachEvent('mouseOver', function () {
                 setDragging(true);
                 setHover(true);
-
-
             })
 
             eventControls.attachEvent('onclick', function (event) {
-                console.log(event);
 
                 if (event.altKey)
                     model.current.material = tileGridMat(fragmentShader, vertexShader)
@@ -68,7 +87,7 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
                         model.current.material = tileGridMat(fragmentShader, vertexShader)
 
                     this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
-                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
+                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);                    
                 } else {
                     // Update marker position to wherever the mouse pointer is currently located
                     this.focused.position.y = this.previous.y;
@@ -82,33 +101,25 @@ function Node({ dragging, initialPos, index, selected, setLocalSelected, setSele
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [initialPos, index, setSelect, store, camera, gl.domElement, setDragging, model])
 
-    // END DRAG
-
-    let [{ name }] = useControls(
-        () => ({
-            name: "Waypoint " + index
-        }),
-        { store }
-    )
-
-    const currentlyDragging = useRef(false);
-
-    const mesh = useRef(null)
-    const [hovered, setHover] = React.useState(false)
-
-    const billboard = useRef(null);
-
     function getMeshPos() {
         const currentPos = mesh.current.position;
 
-        return [currentPos.x, currentPos.y + 2.5, currentPos.z];
+        return [currentPos.x, currentPos.y, currentPos.z];
     }
+
+    function getBillboardPos() {
+        const meshPos = getMeshPos();
+
+        return [meshPos.x, meshPos.y + 2.5, meshPos.z];
+    }
+
+    set({position: mesh.current == null ? [-1, -1, -1] : getMeshPos()})
 
     return (
         <>
             <Billboard
                 ref={billboard}
-                position={mesh.current !== null ? getMeshPos() : [0, 1, 0]}
+                position={mesh.current !== null ? getBillboardPos() : [0, 1, 0]}
                 follow={true}
                 args={[0, 0]}
             // enabled={!selected}
@@ -198,19 +209,23 @@ export class UIManagerRenderer extends React.Component {
         });
     }
 
+    getNodes() {
+        return this.state.nodes;
+    }
+
     addNode(node) {
         // We only want to add new markers if we're in marker creation mode
-        if (this.state.markerCreationMode) {
-            this.setState({
-                nodes: [...this.state.nodes, node],
-                uiManager: this.state.uiManager,
-                camera: this.state.camera,
-                dragging: this.state.dragging,
-                markerCreationMode: this.state.markerCreationMode,
-                selection: this.state.selection,
-                store: this.state.store
-            });
-        }
+        // if (this.state.markerCreationMode) {
+        this.setState({
+            nodes: [...this.state.nodes, node],
+            uiManager: this.state.uiManager,
+            camera: this.state.camera,
+            dragging: this.state.dragging,
+            markerCreationMode: this.state.markerCreationMode,
+            selection: this.state.selection,
+            store: this.state.store
+        });
+        // }
     }
 
     toggleCreationMode() {
@@ -242,7 +257,8 @@ export class UIManagerRenderer extends React.Component {
             {(this.state.nodes.map((v, i) => (
                 <Node
                     key={i}
-                    initialPos={v}
+                    initialPos={v.position}
+                    initialName={v.name}
                     selected={this.state.selection !== null ? this.state.selection[0] === i : false}
                     setSelect={this.state.uiManager.setNodeSelection}
                     setLocalSelected={this.setLocalSelected}
@@ -285,6 +301,26 @@ export default function UIManager(props) {
         stateRef.current.props.uiRenderer.addNode(pos);
     }
 
+    let importProject = (importString) => {
+        const json = JSON.parse(importString);
+
+        const nodes = json.nodes;
+
+        for (var key in nodes) {
+            const val = nodes[key];
+
+            const position = val.position;
+            addNode({name: key, position: new THREE.Vector3(position[0], position[1], position[2])})
+        }
+    }
+
+    let exportProject = () => {
+        const nodes = stateRef.current.props.uiRenderer.getNodes();
+        
+        console.log(JSON.stringify(nodes));
+        return JSON.stringify(nodes);
+    }
+
     useEffect(() => {
         props.uiRef.current = addNode;
 
@@ -304,9 +340,14 @@ export default function UIManager(props) {
     }, [props.uiRenderer, props.uiRef, selection])
 
     // This is absolutely cursed but is needed for the automatic css injection
-    useControls({ "Remove All Markers": button(() => { }) })
+    useControls(
+        {
+            "Remove All Markers": button(() => { })
+        }
+    )
 
     const waypointButton = useRef();
+    const importButton = useRef();
 
     return (
         <div style={{ position: "absolute", right: "1em", top: "1em" }} className="panel">
@@ -314,6 +355,19 @@ export default function UIManager(props) {
                 <div className={"leva-c-hBtFDW"}>
                     <div className={"leva-c-dmsJDs leva-c-dmsJDs-lpvxwm-toggled-true leva-c-dmsJDs-hXSjjU-isRoot-true"}>
                         <div className={"leva-c-bduird"}>
+                            <button
+                                ref={importButton}
+                                onClick={() => { importProject(String.raw`{"nodes":{"Example Waypoint":{"position":[0,0,3]}}}`) }}
+                                style={{ color: "#ededed", backgroundColor: ("#007bff") }}
+                                className={"leva-c-fOioiK"}>{"Import Project"}
+                            </button>
+                            <button
+                                ref={importButton}
+                                onClick={() => { exportProject()}}
+                                style={{ color: "#ededed", backgroundColor: ("#007bff") }}
+                                className={"leva-c-fOioiK"}>{"Export Project"}
+                            </button>
+                            <div /><div /><div />
                             <button
                                 ref={waypointButton}
                                 onClick={() => { setButtonSelected(!buttonSelected); stateRef.current.props.uiRenderer.toggleCreationMode() }}
@@ -325,8 +379,8 @@ export default function UIManager(props) {
                 </div>
             </div>
 
-            <LevaPanel store={store} fill flat titleBar={false} />
-            <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
+            <LevaPanel store={store} fill titleBar={false} />
+            <Leva fill titleBar={false} style={{ position: "absolute" }} />
 
         </div>
     );

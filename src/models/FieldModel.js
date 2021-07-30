@@ -3,6 +3,9 @@ import { useGLTF } from '@react-three/drei'
 import { shadowMat, blueMat, grayMat, lightGrayMat, platformMat, purpleMat, redMat, tileMat, yellowMat, transparentMat } from './materials';
 
 
+// This is bad, and only serves as a unique key between waypoint names. Remove this later
+var currentNodeCount = 0;
+
 export default function Model(props) {
 
   const tileMesh = useRef(null);
@@ -10,7 +13,7 @@ export default function Model(props) {
   const onFieldTileClick = (clicked) => {
     clicked.stopPropagation();
 
-    props.ui(clicked.point);
+    props.ui({name: "Waypoint " + currentNodeCount++, position: clicked.point});
   }
 
   const group = useRef()

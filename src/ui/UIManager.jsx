@@ -1,4 +1,3 @@
-import * as THREE from "three"
 import { button, Leva, LevaPanel, useControls, useCreateStore } from "leva";
 import React from "react";
 import { useEffect, useRef } from "react";
@@ -22,7 +21,7 @@ function Node({ dragging, initialName, initialPos, index, selected, setLocalSele
 
     const billboard = useRef(null);
 
-    let [{ name, position }, set] = useControls(
+    let [{ name }, set] = useControls(
         () => ({
             name: "Waypoint " + index,
             position: [0, 0, 0]
@@ -31,18 +30,12 @@ function Node({ dragging, initialName, initialPos, index, selected, setLocalSele
     )
 
     useEffect(() => {
-
         setSelect([index, store])
 
         if (mesh.current !== null && model !== null) {
             mesh.current.position.set(initialPos.x, initialPos.y, initialPos.z);
 
-            console.log("Setting position to ");
-            console.log(initialPos);
-            set({position: [initialPos.x, initialPos.y, initialPos.z], name: initialName})
-
-            console.log("psotion now");
-            console.log(position);
+            set({ position: [initialPos.x, initialPos.y, initialPos.z], name: initialName })
 
             const eventControls = new EventsControls(camera, gl.domElement);
             // eventControls.map = checkerboard;
@@ -66,9 +59,9 @@ function Node({ dragging, initialName, initialPos, index, selected, setLocalSele
             })
 
             eventControls.attachEvent('mouseUp', function () {
-                // setDragging(!dragfging);
                 setDragging(!dragging);
                 setDragging(!dragging);
+
                 mesh.current.material.opacity = 1;
                 model.current.material = tileMat
 
@@ -87,7 +80,7 @@ function Node({ dragging, initialName, initialPos, index, selected, setLocalSele
                         model.current.material = tileGridMat(fragmentShader, vertexShader)
 
                     this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
-                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);                    
+                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
                 } else {
                     // Update marker position to wherever the mouse pointer is currently located
                     this.focused.position.y = this.previous.y;
@@ -108,12 +101,12 @@ function Node({ dragging, initialName, initialPos, index, selected, setLocalSele
     }
 
     function getBillboardPos() {
-        const meshPos = getMeshPos();
+        let meshPos = getMeshPos();
 
-        return [meshPos.x, meshPos.y + 2.5, meshPos.z];
+        return [meshPos[0], meshPos[1] + 2.5, meshPos[2]];
     }
 
-    set({position: mesh.current == null ? [-1, -1, -1] : getMeshPos()})
+    set({ position: mesh.current === null ? [-1, -1, -1] : getMeshPos() })
 
     return (
         <>
@@ -213,11 +206,15 @@ export class UIManagerRenderer extends React.Component {
         return this.state.nodes;
     }
 
-    addNode(node) {
-        // We only want to add new markers if we're in marker creation mode
-        // if (this.state.markerCreationMode) {
+    createNode(node) {
+        if (this.state.markerCreationMode) {
+            this.addNodes(node);
+        }
+    }
+
+    addNodes(...newNodes) {
         this.setState({
-            nodes: [...this.state.nodes, node],
+            nodes: [...this.state.nodes, ...newNodes],
             uiManager: this.state.uiManager,
             camera: this.state.camera,
             dragging: this.state.dragging,
@@ -225,7 +222,6 @@ export class UIManagerRenderer extends React.Component {
             selection: this.state.selection,
             store: this.state.store
         });
-        // }
     }
 
     toggleCreationMode() {
@@ -297,32 +293,29 @@ export default function UIManager(props) {
         return
     }
 
-    let addNode = (pos) => {
-        stateRef.current.props.uiRenderer.addNode(pos);
+    let createNode = (pos) => {
+        stateRef.current.props.uiRenderer.createNode(pos);
+    }
+
+    let addNodes = (...nodes) => {
+        stateRef.current.props.uiRenderer.addNodes(...nodes);
     }
 
     let importProject = (importString) => {
-        const json = JSON.parse(importString);
+        const nodes = JSON.parse(importString);
 
-        const nodes = json.nodes;
-
-        for (var key in nodes) {
-            const val = nodes[key];
-
-            const position = val.position;
-            addNode({name: key, position: new THREE.Vector3(position[0], position[1], position[2])})
-        }
+        addNodes(...nodes);
     }
 
     let exportProject = () => {
         const nodes = stateRef.current.props.uiRenderer.getNodes();
-        
+
         console.log(JSON.stringify(nodes));
         return JSON.stringify(nodes);
     }
 
     useEffect(() => {
-        props.uiRef.current = addNode;
+        props.uiRef.current = createNode;
 
         if (stateRef.current.props.uiRenderer !== null) {
 
@@ -340,8 +333,9 @@ export default function UIManager(props) {
     }, [props.uiRenderer, props.uiRef, selection])
 
     // This is absolutely cursed but is needed for the automatic css injection
-    useControls(
+    const {importString} = useControls(
         {
+            importString: "Import String Goes Here",
             "Remove All Markers": button(() => { })
         }
     )
@@ -357,13 +351,13 @@ export default function UIManager(props) {
                         <div className={"leva-c-bduird"}>
                             <button
                                 ref={importButton}
-                                onClick={() => { importProject(String.raw`{"nodes":{"Example Waypoint":{"position":[0,0,3]}}}`) }}
+                                onClick={() => { importProject(importString)}}
                                 style={{ color: "#ededed", backgroundColor: ("#007bff") }}
                                 className={"leva-c-fOioiK"}>{"Import Project"}
                             </button>
                             <button
                                 ref={importButton}
-                                onClick={() => { exportProject()}}
+                                onClick={() => { exportProject() }}
                                 style={{ color: "#ededed", backgroundColor: ("#007bff") }}
                                 className={"leva-c-fOioiK"}>{"Export Project"}
                             </button>
@@ -379,8 +373,8 @@ export default function UIManager(props) {
                 </div>
             </div>
 
-            <LevaPanel store={store} fill titleBar={false} />
-            <Leva fill titleBar={false} style={{ position: "absolute" }} />
+            <LevaPanel store={store} fill flat titleBar={false} />
+            <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
 
         </div>
     );

@@ -1,104 +1,58 @@
-import { button, Leva, LevaPanel, useControls } from "leva";
 import React from "react";
-import { useEffect, useRef } from "react";
+import { OrbitControls } from "@react-three/drei"
+import Node from "./Node"
+import { useNodeStore } from "../stores/NodeStore";
+import { useState } from "react";
+import shallow from 'zustand/shallow'
+import { button, useControls } from "leva";
+import { useModelStore } from "../stores/ModelStore";
+import { useUiLevaStore } from "../stores/UILevaStore";
+import { useEffect } from "react";
 
-export default function UIManager(props) {
-    const [[selection, store], setSelection] = React.useState([-1, null]);
-    const [buttonSelected, setButtonSelected] = React.useState(false);
-    const stateRef = useRef();
+export default function NUIManager(props) {
 
-    stateRef.current = { props };
+    const nodes = useNodeStore(state => state.nodes);
+    const model = useModelStore(state => state.model);
 
-    let setNodeSelection = (node) => {
-        stateRef.current.props.uiRenderer.setSelected(node);
+    const { setMarkerMode, setUiStore } = useUiLevaStore(state => ({ setMarkerMode: state.setMarkerMode, setUiStore: state.setStore }), shallow);
 
-        setSelection(node);
+    const [dragging, setDragging] = useState(false);
 
-        return
-    }
-
-    let createNode = (pos) => {
-        stateRef.current.props.uiRenderer.createNode(pos);
-    }
-
-    let addNodes = (...nodes) => {
-        stateRef.current.props.uiRenderer.addNodes(...nodes);
-    }
-
-    let importProject = (importString) => {
-        const nodes = JSON.parse(importString);
-
-        addNodes(...nodes);
-    }
-
-    let exportProject = () => {
-        const nodes = stateRef.current.props.uiRenderer.getNodes();
-
-        console.log(JSON.stringify(nodes));
-        return JSON.stringify(nodes);
-    }
-
-    useEffect(() => {
-        props.uiRef.current = createNode;
-
-        if (stateRef.current.props.uiRenderer !== null) {
-
-
-            if (stateRef.current.props.uiRenderer.state.uiManager !== null && stateRef.current.props.uiRenderer.state.uiManager !== undefined) return;
-
-            stateRef.current.props.uiRenderer.setUiManager({ selection, setNodeSelection });
-        }
-
-        return () => {
-            props.uiRef.current = null;
-        }
-
-
-    }, [props.uiRenderer, props.uiRef, selection])
-
-    const {importString} = useControls(
+    useControls(
         {
-            importString: "Import String Goes Here",
             "Remove All Markers": button(() => { })
         }
     )
 
-    const waypointButton = useRef();
-    const importButton = useRef();
+    const [[selection, store], setSelection] = React.useState([-1, null]);
 
-    return (
-        <div style={{ position: "absolute", right: "1em", top: "1em" }} className="panel">
-            <div className={"leva-c-kWgxhW leva-c-kWgxhW-bSMcqW-fill-true leva-c-kWgxhW-nNfbl-hideTitleBar-true"}>
-                <div className={"leva-c-hBtFDW"}>
-                    <div className={"leva-c-dmsJDs leva-c-dmsJDs-lpvxwm-toggled-true leva-c-dmsJDs-hXSjjU-isRoot-true"}>
-                        <div className={"leva-c-bduird"}>
-                            <button
-                                ref={importButton}
-                                onClick={() => { importProject(importString)}}
-                                style={{ color: "#ededed", backgroundColor: ("#007bff") }}
-                                className={"leva-c-fOioiK"}>{"Import Project"}
-                            </button>
-                            <button
-                                ref={importButton}
-                                onClick={() => { exportProject() }}
-                                style={{ color: "#ededed", backgroundColor: ("#007bff") }}
-                                className={"leva-c-fOioiK"}>{"Export Project"}
-                            </button>
-                            <div /><div /><div />
-                            <button
-                                ref={waypointButton}
-                                onClick={() => { setButtonSelected(!buttonSelected); stateRef.current.props.uiRenderer.toggleCreationMode() }}
-                                style={{ color: "#ededed", backgroundColor: (buttonSelected ? "#ff003c" : "#007bff") }}
-                                className={"leva-c-fOioiK"}>{buttonSelected ? "Exit Waypoint Creation" : "Enter Waypoint Creation"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    console.log("Node length here: " + nodes.length);
 
-            <LevaPanel store={store} fill flat titleBar={false} />
-            <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
+    useEffect(() => {
+        console.log("Setting new selection...");
 
-        </div>
-    );
+        setUiStore(store);
+    }, [store, setMarkerMode, setUiStore])
+
+    console.log(selection);
+
+
+    return <>
+        {(nodes.map((v, i) => (
+            <Node
+                key={i}
+                initialPos={v.position}
+                initialName={v.name}
+                selected={selection !== null ? selection === i : false}
+                setSelect={setSelection}
+                dragging={dragging}
+                setDragging={setDragging}
+                model={model}
+                index={i}
+            />
+        )))}
+
+        {<OrbitControls enabled={!dragging} />}
+    </>
+
 }

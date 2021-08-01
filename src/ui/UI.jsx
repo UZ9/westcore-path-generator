@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { button, Leva, LevaPanel, useControls } from "leva";
-import { useUiLevaStore } from "../../stores/UILevaStore";
-import { useNodeStore } from "../../stores/NodeStore";
+import { useUiLevaStore } from "../stores/UILevaStore";
+import { useNodeStore } from "../stores/NodeStore";
 
 
 export default function UIButton(props) {

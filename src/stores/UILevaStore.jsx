@@ -1,4 +1,3 @@
-import { StaticReadUsage } from "three"
 import create from "zustand"
 
 export const useUiLevaStore = create(set => ({

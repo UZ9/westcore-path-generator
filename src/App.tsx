@@ -5,9 +5,8 @@ import Model from "./models/FieldModel"
 import { Box } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
-import UIManager from './ui/UIManager'
-import NUIManagerRenderer from './ui/NUIManagerRenderer'
-import UIButton from './ui/button/UI'
+import NUIManagerRenderer from './ui/UIManager'
+import UIButton from './ui/UI'
 
 function intersectionsFilter(intersections: THREE.Intersection[]) {
   return intersections?.length ? [intersections[0]] : intersections

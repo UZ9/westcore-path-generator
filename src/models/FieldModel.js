@@ -1,16 +1,26 @@
 import { useEffect, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { shadowMat, blueMat, grayMat, lightGrayMat, platformMat, purpleMat, redMat, tileMat, yellowMat, transparentMat } from './materials';
-
+import { useNodeStore } from '../stores/NodeStore';
+import { useModelStore } from '../stores/ModelStore';
+import { useUiLevaStore } from '../stores/UILevaStore';
 
 export default function Model(props) {
+  const addNode = useNodeStore(state => state.addNode);
 
   const tileMesh = useRef(null);
+
+  const setModel = useModelStore(state => state.setModel)
+
+  const markerMode = useUiLevaStore(state => state.markerMode);
 
   const onFieldTileClick = (clicked) => {
     clicked.stopPropagation();
 
-    props.ui({name: "Waypoint", position: clicked.point});
+    if (markerMode) {
+      addNode({ name: "Waypoint", position: clicked.point });
+    }
+    // props.ui({name: "Waypoint", position: clicked.point});
   }
 
   const group = useRef()
@@ -38,9 +48,11 @@ export default function Model(props) {
 
   useEffect(() => {
     // The UIManager needs to have a reference to the tile model
-    if (props.tiles === null && tileMesh.current !== null) {
-      props.setTiles(tileMesh);
-    }
+
+    setModel(tileMesh);
+    // if (props.tiles === null && tileMesh.current !== null) {
+    //   props.setTiles(tileMesh);
+    // }
   })
 
   return (

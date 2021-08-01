@@ -6,7 +6,8 @@ import { Box } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import UIManager from './ui/UIManager'
-import { UIManagerRenderer } from './ui/UIManagerRenderer'
+import NUIManagerRenderer from './ui/NUIManagerRenderer'
+import UIButton from './ui/button/UI'
 
 function intersectionsFilter(intersections: THREE.Intersection[]) {
   return intersections?.length ? [intersections[0]] : intersections
@@ -17,7 +18,7 @@ export default function App() {
   const ui = uiRef.current;
 
   const [tiles, setTiles] = React.useState<THREE.Mesh[] | null>(null!)
-  const [uiRenderer, setUiRenderer] = React.useState<UIManagerRenderer | null>(null);
+  // const [uiRenderer, setUiRenderer] = React.useState<NUIManagerRenderer | null>(null);
 
   const camera = useRef<THREE.PerspectiveCamera>(null!);
 
@@ -34,14 +35,6 @@ export default function App() {
     map: backgroundTexture
   })
 
-  if (uiRenderer !== null && uiRenderer.state.camera == null) {
-    uiRenderer.setCamera(camera);
-  }
-
-  function getCamera() {
-    return camera;
-  }
-
   return (
     <div style={{ width: "100%", height: "100%" }}>
 
@@ -51,7 +44,8 @@ export default function App() {
         gl={{ shadowMapEnabled: true, shadowMapType: THREE.PCFShadowMap, antialias: true, pixelRatio: window.devicePixelRatio }}
         camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
 
-        <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles} />
+        <NUIManagerRenderer/>
+        {/* <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles} /> */}
 
 
         <ambientLight intensity={0.25} />
@@ -78,7 +72,8 @@ export default function App() {
 
       </Canvas>
 
-      <UIManager uiRef={uiRef} uiRenderer={uiRenderer} />
+      <UIButton/>
+      {/* <UIManager uiRef={uiRef}/> */}
     </div>
   )
 }

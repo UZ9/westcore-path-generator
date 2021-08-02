@@ -35,7 +35,7 @@ export default function App() {
   })
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    <>
 
       <Canvas
         shadows={true}
@@ -73,6 +73,6 @@ export default function App() {
 
       <UIButton/>
       {/* <UIManager uiRef={uiRef}/> */}
-    </div>
+    </>
   )
 }

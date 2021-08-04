@@ -4,7 +4,7 @@ import { useUiLevaStore } from "../stores/UILevaStore";
 import { useNodeStore } from "../stores/NodeStore";
 
 
-export default function UIButton(props) {
+export default function UI(props) {
     const importButton = useRef();
     const waypointButton = useRef();
 

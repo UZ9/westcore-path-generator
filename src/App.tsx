@@ -6,7 +6,7 @@ import { Box } from '@react-three/drei'
 import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import NUIManagerRenderer from './ui/UIManager'
-import UIButton from './ui/UI'
+import UI from './ui/UI'
 
 function intersectionsFilter(intersections: THREE.Intersection[]) {
   return intersections?.length ? [intersections[0]] : intersections
@@ -36,7 +36,7 @@ export default function App() {
 
   return (
     <>
-
+      <UI/>
       <Canvas
         shadows={true}
         raycaster={{ filter: intersectionsFilter }}
@@ -44,8 +44,6 @@ export default function App() {
         camera={{ ref: camera, fov: 75, position: [0, 100, 100] }}>
 
         <NUIManagerRenderer/>
-        {/* <UIManagerRenderer camera={getCamera} ref={setUiRenderer} tiles={tiles} /> */}
-
 
         <ambientLight intensity={0.25} />
         <directionalLight
@@ -70,9 +68,6 @@ export default function App() {
         </Suspense>
 
       </Canvas>
-
-      <UIButton/>
-      {/* <UIManager uiRef={uiRef}/> */}
     </>
   )
 }

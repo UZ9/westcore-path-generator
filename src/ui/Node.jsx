@@ -1,6 +1,5 @@
 import { useControls, useCreateStore } from "leva";
 import React from "react";
-import * as THREE from 'three'
 import { useEffect, useRef } from "react";
 import { Text, Billboard } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"

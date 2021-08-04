@@ -34,15 +34,13 @@ export default function NUIManager(props) {
         setUiStore(store);
     }, [store, setMarkerMode, setUiStore])
 
-    console.log(selection);
-
+    console.log(nodes);
 
     return <>
         {(nodes.map((v, i) => (
             <Node
                 key={i}
-                initialPos={v.position}
-                initialName={v.name}
+                node={v}
                 selected={selection !== null ? selection === i : false}
                 setSelect={setSelection}
                 dragging={dragging}

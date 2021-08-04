@@ -1,16 +1,23 @@
 import { useControls, useCreateStore } from "leva";
 import React from "react";
+import * as THREE from 'three'
 import { useEffect, useRef } from "react";
 import { Text, Billboard } from "@react-three/drei"
 import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
 import { tileMat, tileGridMat } from "../models/materials";
+import { useNodeStore } from "../stores/NodeStore";
 
-export default function Node({ dragging, initialName, initialPos, index, selected, setLocalSelected, setSelect, setDragging, model }) {
+export default function Node({ dragging, index, selected, setSelect, setDragging, model }) {
     const store = useCreateStore();
 
     const vertexShader = document.getElementById('vertexShader').textContent;
     const fragmentShader = document.getElementById('fragmentShader').textContent;
+
+    const setNodeState = useNodeStore(state => state.setNodeState);
+    const nodes = useNodeStore(state => state.nodes);
+
+    const node = nodes[index];
 
     const { gl, camera } = useThree();
 
@@ -33,12 +40,10 @@ export default function Node({ dragging, initialName, initialPos, index, selecte
         setSelect([index, store])
 
         if (mesh.current !== null && model !== null) {
-            mesh.current.position.set(initialPos.x, initialPos.y, initialPos.z);
 
-            set({ position: [initialPos.x, initialPos.y, initialPos.z], name: initialName })
+            set({ position: [node.position.x, node.position.y, node.position.z], name: node.name })
 
             const eventControls = new EventsControls(camera, gl.domElement);
-            // eventControls.map = checkerboard;
 
             eventControls.attachEvent('mouseOver', function () {
                 setDragging(true);
@@ -91,8 +96,31 @@ export default function Node({ dragging, initialName, initialPos, index, selecte
 
             eventControls.map = model.current;
         }
+
+
+
+
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [initialPos, index, setSelect, store, camera, gl.domElement, setDragging, model])
+    }, [index, setSelect, store, camera, gl.domElement, setDragging, model])
+
+    useEffect(() => {
+        setNodeState(state => {
+            if (mesh.current !== null) {
+
+
+                const meshPos = getMeshPos();
+
+                // We only want to update the value if it has changed
+                if (state.nodes[index].position !== meshPos)
+                    state.nodes[index].position = meshPos;
+
+                if (state.nodes[index].name !== name)
+                    state.nodes[index].name = name;
+
+            }
+        })
+    }, [index, setNodeState, name])
 
     function getMeshPos() {
         const currentPos = mesh.current.position;
@@ -117,7 +145,7 @@ export default function Node({ dragging, initialName, initialPos, index, selecte
                 args={[0, 0]}
             >
                 <Text
-                    enabled={!currentlyDragging.current}
+                    // enabled={!currentlyDragging.current}
                     color="#ededed"
                     fontSize={1.5}
                     maxWidth={60}
@@ -125,9 +153,6 @@ export default function Node({ dragging, initialName, initialPos, index, selecte
                     outlineBlur={"15%"}
                     outlineColor={"#000000"}
                     textAlign="left"
-
-                    // enabled={!selected}
-                    // font="https://fonts.gstatic.com/s/raleway/v14/1Ptrg8zYS_SKggPNwK4vaqI.woff"
                     anchorX="center"
                     anchorY="middle">
                     {name}
@@ -135,7 +160,7 @@ export default function Node({ dragging, initialName, initialPos, index, selecte
             </Billboard>
 
             <mesh
-                // { ...bind() }
+                position={node.position}
                 ref={mesh}
                 scale={1}
                 onClick={(_event) => { setSelect([index, store]); }}

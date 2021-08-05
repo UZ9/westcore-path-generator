@@ -26,15 +26,10 @@ export default function NUIManager(props) {
 
     const [[selection, store], setSelection] = React.useState([-1, null]);
 
-    console.log("Node length here: " + nodes.length);
-
     useEffect(() => {
-        console.log("Setting new selection...");
 
         setUiStore(store);
     }, [store, setMarkerMode, setUiStore])
-
-    console.log(nodes);
 
     return <>
         {(nodes.map((v, i) => (

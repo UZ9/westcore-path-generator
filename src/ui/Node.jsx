@@ -6,14 +6,15 @@ import { useThree } from "@react-three/fiber"
 import { EventsControls } from "../controls/EventsControls";
 import { tileMat, tileGridMat } from "../models/materials";
 import { useNodeStore } from "../stores/NodeStore";
+import * as S from "../models/shaders";
 
 export default function Node({ dragging, node, index, selected, setSelect, setDragging, model }) {
     console.log("Rendering node");
 
     const store = useCreateStore();
 
-    const vertexShader = document.getElementById('vertexShader').textContent;
-    const fragmentShader = document.getElementById('fragmentShader').textContent;
+    const vertexShader = S.gridTileVertex;
+    const fragmentShader = S.gridTileFragment;
 
     const setNodeState = useNodeStore(state => state.setNodeState);
 

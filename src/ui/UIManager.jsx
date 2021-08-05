@@ -9,7 +9,7 @@ import { useModelStore } from "../stores/ModelStore";
 import { useUiLevaStore } from "../stores/UILevaStore";
 import { useEffect } from "react";
 
-export default function NUIManager(props) {
+export default function UIManager() {
 
     const nodes = useNodeStore(state => state.nodes);
     const model = useModelStore(state => state.model);
@@ -27,7 +27,6 @@ export default function NUIManager(props) {
     const [[selection, store], setSelection] = React.useState([-1, null]);
 
     useEffect(() => {
-
         setUiStore(store);
     }, [store, setMarkerMode, setUiStore])
 

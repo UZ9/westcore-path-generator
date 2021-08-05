@@ -7,20 +7,17 @@ import { EventsControls } from "../controls/EventsControls";
 import { tileMat, tileGridMat } from "../models/materials";
 import { useNodeStore } from "../stores/NodeStore";
 
-export default function Node({ dragging, index, selected, setSelect, setDragging, model }) {
+export default function Node({ dragging, node, index, selected, setSelect, setDragging, model }) {
+    console.log("Rendering node");
+
     const store = useCreateStore();
 
     const vertexShader = document.getElementById('vertexShader').textContent;
     const fragmentShader = document.getElementById('fragmentShader').textContent;
 
     const setNodeState = useNodeStore(state => state.setNodeState);
-    const nodes = useNodeStore(state => state.nodes);
-
-    const node = nodes[index];
 
     const { gl, camera } = useThree();
-
-    const currentlyDragging = useRef(false);
 
     const mesh = useRef(null)
     const [hovered, setHover] = React.useState(false)
@@ -45,8 +42,10 @@ export default function Node({ dragging, index, selected, setSelect, setDragging
             const eventControls = new EventsControls(camera, gl.domElement);
 
             eventControls.attachEvent('mouseOver', function () {
-                setDragging(true);
-                setHover(true);
+                if (dragging === false)
+                    setDragging(true);
+                if (hovered === false)
+                    setHover(true);
             })
 
             eventControls.attachEvent('onclick', function (event) {
@@ -58,25 +57,16 @@ export default function Node({ dragging, index, selected, setSelect, setDragging
             eventControls.attachEvent('mouseOut', function () {
                 setDragging(false);
                 setHover(false);
-
-                currentlyDragging.current = false;
             })
 
             eventControls.attachEvent('mouseUp', function () {
-                setDragging(!dragging);
-                setDragging(!dragging);
-
                 mesh.current.material.opacity = 1;
                 model.current.material = tileMat
 
                 setHover(true);
-
-                currentlyDragging.current = false;
             })
 
             eventControls.attachEvent('dragAndDrop', function (altUsed) {
-                currentlyDragging.current = true;
-
                 // If alt is being used, snap to the grid
                 if (altUsed) {
                     // Switch to the tile grid shader if it hasn't already
@@ -111,11 +101,10 @@ export default function Node({ dragging, index, selected, setSelect, setDragging
                 const meshPos = getMeshPos();
 
                 // We only want to update the value if it has changed
-                if (state.nodes[index].position !== meshPos)
-                    state.nodes[index].position = meshPos;
 
-                if (state.nodes[index].name !== name)
-                    state.nodes[index].name = name;
+                state.nodes[index].position = meshPos;
+
+                state.nodes[index].name = name;
 
             }
         })
@@ -144,7 +133,6 @@ export default function Node({ dragging, index, selected, setSelect, setDragging
                 args={[0, 0]}
             >
                 <Text
-                    // enabled={!currentlyDragging.current}
                     color="#ededed"
                     fontSize={1.5}
                     maxWidth={60}

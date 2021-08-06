@@ -8,6 +8,7 @@ import { button, useControls } from "leva";
 import { useModelStore } from "../stores/ModelStore";
 import { useUiLevaStore } from "../stores/UILevaStore";
 import { useEffect } from "react";
+import NodeConnection from "./NodeConnection";
 
 export default function UIManager() {
 
@@ -42,6 +43,9 @@ export default function UIManager() {
                 model={model}
                 index={i}
             />
+        )))}
+        {(nodes.slice(0, -1).map((v, i) => (
+            <NodeConnection startMarker={v} endMarker={nodes[i + 1]} />
         )))}
 
         {<OrbitControls enabled={!dragging} />}

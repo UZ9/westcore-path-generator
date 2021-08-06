@@ -97,16 +97,9 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
     useEffect(() => {
         setNodeState(state => {
             if (mesh.current !== null) {
-
-
-                const meshPos = getMeshPos();
-
-                // We only want to update the value if it has changed
-
-                state.nodes[index].position = meshPos;
+                state.nodes[index].position = mesh.current.position;
 
                 state.nodes[index].name = name;
-
             }
         })
     }, [index, setNodeState, name])

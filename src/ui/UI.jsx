@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { button, Leva, LevaPanel, useControls } from "leva";
 import { useUiLevaStore } from "../stores/UILevaStore";
+import * as THREE from "three";
 import { useNodeStore } from "../stores/NodeStore";
 
 
@@ -27,6 +28,11 @@ export default function UI() {
         const parsedNodes = JSON.parse(importString);
 
         for (const index in parsedNodes) {
+            // Change serialized position to be a THREE.Vector3
+            let node = parsedNodes[index];
+
+            node.position = new THREE.Vector3(node.position.x, node.position.y, node.position.z);
+
             addNode(parsedNodes[index]);
         }
     }

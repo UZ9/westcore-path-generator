@@ -1,5 +1,5 @@
 import React from "react";
-import { OrbitControls } from "@react-three/drei"
+import { OrbitControls, Stats } from "@react-three/drei"
 import Node from "./Node"
 import { useNodeStore } from "../stores/NodeStore";
 import { useState } from "react";
@@ -44,11 +44,15 @@ export default function UIManager() {
                 index={i}
             />
         )))}
-        {(nodes.slice(0, -1).map((v, i) => (
-            <NodeConnection startMarker={v} endMarker={nodes[i + 1]} />
-        )))}
+        {(nodes.slice(0, -1).map((v, i) => {
+            return <NodeConnection model={model} dragging={dragging} setDragging={setDragging} startMarker={v} endMarker={nodes[i + 1]}/>
+        }))}
+
 
         {<OrbitControls enabled={!dragging} />}
+        <Stats/>
+
+        {/* <Line color={"red"} lineWidth={10}  points={[[0, 20, 0], [10, 20, 0]]}/> */}
     </>
 
 }

@@ -9,12 +9,12 @@ import * as S from "../models/shaders";
 import * as M from '../models/materials'
 
 export default function NodeConnection({ dragging, setDragging, model, startMarker, endMarker }) {
-    console.log("yeehaw");
-
-    const [tangent, setTangent] = useState(new THREE.Vector2(0, 0));
+    
 
     const startPos = startMarker.position;
     const endPos = endMarker.position;
+
+    const [tangent, setTangent] = useState(new THREE.Vector2((startPos.x + endPos.x) / 2,  (endPos.z + endPos.z) / 2));
 
     const vertexShader = S.gridTileVertex;
     const fragmentShader = S.gridTileFragment;

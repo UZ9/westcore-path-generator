@@ -16,4 +16,5 @@ While there isn't any documentation for this project yet, you can see a live dem
 - UI functionality
 - Waypoint placement using the ``Enter Waypoint Creation`` button
 - Realtime editing of waypoint data
+- Waypoint drag movement, along with snapping to grid functionality (holding ALT)
 - Waypoint serialization, with buttons for importing (takes from the importString parameter) and exporting (prints JSON string in console) a project   

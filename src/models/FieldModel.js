@@ -9,10 +9,12 @@ export default function Model(props) {
   const addNode = useNodeStore(state => state.addNode);
 
   const tileMesh = useRef(null);
+  const rings = useRef(null);
 
   const setModel = useModelStore(state => state.setModel)
 
   const markerMode = useUiLevaStore(state => state.markerMode);
+  const hideTiles = useUiLevaStore(state => state.hideFieldElements);
 
   const onFieldTileClick = (clicked) => {
     clicked.stopPropagation();
@@ -50,6 +52,7 @@ export default function Model(props) {
     // The UIManager needs to have a reference to the tile model
 
     setModel(tileMesh);
+
     // if (props.tiles === null && tileMesh.current !== null) {
     //   props.setTiles(tileMesh);
     // }
@@ -675,301 +678,305 @@ export default function Model(props) {
         <mesh geometry={nodes.TiP_Lines_1.geometry} material={shadowMat} />
         <mesh geometry={nodes.TiP_Lines_2.geometry} material={shadowMat} />
       </group>
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Element.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements319.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements321.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements323.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements325.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements327.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements329.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements331.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements333.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements335.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements337.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements339.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements341.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements343.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements345.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements347.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements349.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements351.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements353.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements355.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements357.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements359.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements361.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements363.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements365.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements367.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements369.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements371.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements373.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements375.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements377.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements379.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements381.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements383.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements385.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements387.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements389.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements391.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements393.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements395.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements397.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <mesh castShadow receiveShadow
-        geometry={nodes.Tipping_Point_Game_Elements399.geometry}
-        material={purpleMat}
-        rotation={[Math.PI / 2, 0, 0]}
-      />
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_4.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_7.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_8.geometry} material={blueMat} />
+      <group ref={rings} scale={hideTiles ? 0 : 1}>
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Element.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements319.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements321.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements323.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements325.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements327.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements329.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements331.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements333.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements335.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements337.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements339.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements341.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements343.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements345.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements347.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements349.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements351.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements353.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements355.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements357.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements359.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements361.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements363.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements365.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements367.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements369.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements371.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements373.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements375.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements377.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements379.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements381.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements383.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements385.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements387.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements389.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements391.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements393.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements395.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements397.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
+        <mesh castShadow receiveShadow
+          geometry={nodes.Tipping_Point_Game_Elements399.geometry}
+          material={purpleMat}
+          rotation={[Math.PI / 2, 0, 0]}
+        />
       </group>
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_4.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_7.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_8.geometry} material={blueMat} />
-      </group>
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_4.geometry} material={yellowMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_7.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_8.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_9.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_10.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_11.geometry} material={grayMat} />
-      </group>
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_4.geometry} material={yellowMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_7.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_8.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_9.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_10.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_11.geometry} material={grayMat} />
-      </group>
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_4.geometry} material={yellowMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_7.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_8.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_9.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_10.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_11.geometry} material={grayMat} />
-      </group>
-      <group rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_4.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_7.geometry} material={redMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_8.geometry} material={grayMat} />
-      </group>
-      <group name="" rotation={[Math.PI / 2, 0, 0]}>
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_1.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_2.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_3.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_4.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_5.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_6.geometry} material={grayMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_7.geometry} material={redMat} />
-        <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_8.geometry} material={grayMat} />
+      <group scale={hideTiles ? 0 : 1}>
+        <group rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_4.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_7.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1274_8.geometry} material={blueMat} />
+        </group>
+        <group rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_4.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_7.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1275_8.geometry} material={blueMat} />
+        </group>
+        <group rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_4.geometry} material={yellowMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_7.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_8.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_9.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_10.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1273_11.geometry} material={grayMat} />
+        </group>
+        <group rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_4.geometry} material={yellowMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_7.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_8.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_9.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_10.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1098_11.geometry} material={grayMat} />
+        </group>
+        <group rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_4.geometry} material={yellowMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_7.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_8.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_9.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_10.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1238_11.geometry} material={grayMat} />
+        </group>
+        <group rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_4.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_7.geometry} material={redMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1194_8.geometry} material={grayMat} />
+        </group>
+        <group name="" rotation={[Math.PI / 2, 0, 0]}>
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_1.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_2.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_3.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_4.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_5.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_6.geometry} material={grayMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_7.geometry} material={redMat} />
+          <mesh castShadow receiveShadow geometry={nodes.TiP_Inches1162_8.geometry} material={grayMat} />
+        </group>
       </group>
     </group>
   )

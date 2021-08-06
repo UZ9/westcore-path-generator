@@ -13,6 +13,7 @@ export default function UI() {
     const addNode = useNodeStore(state => state.addNode);
 
     const store = useUiLevaStore(state => state.currentNodeStore)
+    const toggleFieldElements = useUiLevaStore(state => state.toggleFieldElements);
 
     const toggleMarkerMode = useUiLevaStore(state => state.toggleMarkerMode);
 
@@ -20,6 +21,10 @@ export default function UI() {
 
     const {importString} = useControls(
         {
+            hideGameElements: {
+                value: false,
+                onChange: () => { toggleFieldElements(); }
+            },
             importString: "Import String Goes Here"
         }
     )

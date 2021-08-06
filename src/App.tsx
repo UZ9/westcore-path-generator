@@ -3,7 +3,6 @@ import React, { useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Model from "./models/FieldModel"
 import { Box } from '@react-three/drei'
-import MarkerManager from './nodes/MarkerManager'
 import './App.css'
 import NUIManagerRenderer from './ui/UIManager'
 import UI from './ui/UI'
@@ -20,8 +19,6 @@ export default function App() {
   // const [uiRenderer, setUiRenderer] = React.useState<NUIManagerRenderer | null>(null);
 
   const camera = useRef<THREE.PerspectiveCamera>(null!);
-
-  const markerManager = useRef<MarkerManager>(null!);
 
   const sphereGeometry = new THREE.SphereGeometry(500, 60, 40);
 
@@ -60,8 +57,6 @@ export default function App() {
 
         <mesh geometry={sphereGeometry} material={sphereMaterial} />
         <Box position={[100, 200, 0]} args={[1, 1, 1]} />
-
-        <MarkerManager ref={markerManager} />
 
         <Suspense fallback={null}>
           <Model ui={ui} tiles={tiles} setTiles={setTiles} />

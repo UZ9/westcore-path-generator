@@ -9,8 +9,6 @@ import { useNodeStore } from "../stores/NodeStore";
 import * as S from "../models/shaders";
 
 export default function Node({ dragging, node, index, selected, setSelect, setDragging, model }) {
-    console.log("Rendering node");
-
     const store = useCreateStore();
 
     const vertexShader = S.gridTileVertex;

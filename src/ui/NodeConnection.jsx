@@ -7,21 +7,30 @@ import { EventsControls } from '../controls/EventsControls';
 import * as S from "../models/shaders";
 
 import * as M from '../models/materials'
+import { CubicHermiteSpline } from '../lib/CubicHermiteSpline';
+
+var i = 0;
 
 export default function NodeConnection({ dragging, setDragging, model, startMarker, endMarker }) {
-    
+
 
     const startPos = startMarker.position;
     const endPos = endMarker.position;
 
-    const [tangent, setTangent] = useState(new THREE.Vector2((startPos.x + endPos.x) / 2,  (endPos.z + endPos.z) / 2));
+    const [vectors, setVectors] = useState([new THREE.Vector2(20, 0), new THREE.Vector2(0, 0)]);
 
     const vertexShader = S.gridTileVertex;
     const fragmentShader = S.gridTileFragment;
 
     const { gl, camera } = useThree();
 
-    const tangentMesh = useRef(null);
+    const v0Mesh = useRef(null);
+    const v1Mesh = useRef(null);
+    
+    // Because a callback can't access an updated state value, use a ref
+    const vectorRef = useRef();
+    
+    vectorRef.current = vectors;
 
     const position = new THREE.Vector3();
 
@@ -33,14 +42,10 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
     // Add a bit of y-offset to avoid clipping the floor
     position.add(new THREE.Vector3(0, 0.01, 0));
 
-    const curve = new THREE.QuadraticBezierCurve(
-        new THREE.Vector2(startPos.x, startPos.z),
-        tangent,
-        new THREE.Vector2(endPos.x, endPos.z),
-    )
+    const curve = new CubicHermiteSpline([[startPos.x, startPos.z], [endPos.x, endPos.z]], [[vectors[0].x * 2, vectors[0].y * 2], [vectors[1].x * 2, vectors[1].y * 2]]);
 
     useEffect(() => {
-        if (tangentMesh.current !== null && model !== null) {
+        if (v0Mesh.current !== null && v1Mesh.current !== null && model !== null) {
             const eventControls = new EventsControls(camera, gl.domElement);
 
             eventControls.attachEvent('mouseOver', function () {
@@ -62,41 +67,54 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
             })
 
             eventControls.attachEvent('mouseUp', function () {
-                tangentMesh.current.material.opacity = 1;
+                this.focused.material.opacity = 1;
                 model.current.material = M.tileMat
 
                 setHover(true);
             })
 
             eventControls.attachEvent('dragAndDrop', function (altUsed) {
-                // If alt is being used, snap to the grid
-                if (altUsed) {
-                    // Switch to the tile grid shader if it hasn't already
-                    if (model.current.material === M.tileMat)
-                        model.current.material = M.tileGridMat(fragmentShader, vertexShader)
+                i++;
 
-                    this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
-                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
-                } else {
-                    // Update marker position to wherever the mouse pointer is currently located
-                    this.focused.position.y = this.previous.y;
+                if (i % 8 === 0) {
+
+                    // If alt is being used, snap to the grid
+                    if (altUsed) {
+                        // Switch to the tile grid shader if it hasn't already
+                        if (model.current.material === M.tileMat)
+                            model.current.material = M.tileGridMat(fragmentShader, vertexShader)
+
+                        this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
+                        this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
+                    } else {
+                        // Update marker position to wherever the mouse pointer is currently located
+                        this.focused.position.y = this.previous.y;
+                    }
+
+                    if (this.focused.name === "v0") {
+
+                        setVectors([new THREE.Vector2(this.focused.position.x, this.focused.position.z), vectorRef.current[1]]);
+                    } else {
+                        setVectors([vectorRef.current[0], new THREE.Vector2(this.focused.position.x, this.focused.position.z)]);
+                    }
                 }
 
-                setTangent(new THREE.Vector2(this.focused.position.x, this.focused.position.z))
+
             });
 
-            eventControls.attach(tangentMesh.current);
+            eventControls.attach(v0Mesh.current);
+            eventControls.attach(v1Mesh.current);
 
             eventControls.map = model.current;
         }
 
 
-        
+
 
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [camera, gl.domElement, model, dragging, setDragging])
-    let points = curve.getPoints(25);
+    let points = curve.getPoints(400);
 
     // const colors = [];
 
@@ -110,27 +128,38 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
     //     colors.push(color.r, color.g, color.b);
     // }
 
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const geometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0], v[1])));
 
-    const tangentGeometry = new THREE.BufferGeometry().setFromPoints([startPos, new THREE.Vector3(tangent.x, 0, tangent.y), endPos])
+
+    const v0Geometry = new THREE.BufferGeometry().setFromPoints([startPos, new THREE.Vector3(vectors[0].x, 0, vectors[0].y)]);
+    const v1Geometry = new THREE.BufferGeometry().setFromPoints([endPos, new THREE.Vector3(vectors[1].x, 0, vectors[1].y)]);
 
     // geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     return (
         <>
 
-            <mesh ref={tangentMesh} position={[tangent.x, 0.5, tangent.y]}>
+            <mesh name={"v0"} ref={v0Mesh} position={[vectors[0].x, 0.5, vectors[0].y]}>
                 <boxGeometry args={[1, 1, 1]} />
                 <meshStandardMaterial color={"red"} />
             </mesh>
 
+            <mesh name={"v1"} ref={v1Mesh} position={[vectors[1].x, 0.5, vectors[1].y]}>
+                <boxGeometry args={[1, 1, 1]} />
+                <meshStandardMaterial color={"green"} />
+            </mesh>
+
 
             <line position={[0, 0.1, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={geometry} />
-            <line position={[0, 0.1, 0]} geometry={tangentGeometry}>
-                <lineBasicMaterial color={"yellow"}/>
-                {/* <lineDashedMaterial/> */}
+
+            <line position={[0, 0.1, 0]} geometry={v0Geometry}>
+                <lineBasicMaterial color={"yellow"} />
             </line>
- 
+
+            <line position={[0, 0.1, 0]} geometry={v1Geometry}>
+                <lineBasicMaterial color={"yellow"} />
+            </line>
+
             {/* {points.map((v, i) => {
                 return <mesh position={[v.x, 0, v.y]}><boxGeometry args={[0.3, 0.3, 0.3]} /><meshStandardMaterial /></mesh>
             })} */}

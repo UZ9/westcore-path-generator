@@ -26,10 +26,10 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
     const v0Mesh = useRef(null);
     const v1Mesh = useRef(null);
-    
+
     // Because a callback can't access an updated state value, use a ref
     const vectorRef = useRef();
-    
+
     vectorRef.current = vectors;
 
     const position = new THREE.Vector3();
@@ -42,7 +42,9 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
     // Add a bit of y-offset to avoid clipping the floor
     position.add(new THREE.Vector3(0, 0.01, 0));
 
-    const curve = new CubicHermiteSpline([[startPos.x, startPos.z], [endPos.x, endPos.z]], [[vectors[0].x * 2, vectors[0].y * 2], [vectors[1].x * 2, vectors[1].y * 2]]);
+    const velocityScalarFunc = (val) => val * 1;
+
+    const curve = new CubicHermiteSpline([[startPos.x, startPos.z], [endPos.x, endPos.z]], [[velocityScalarFunc(vectors[0].x), velocityScalarFunc(vectors[0].y)], [velocityScalarFunc(vectors[1].x), velocityScalarFunc(vectors[1].y)]]);
 
     useEffect(() => {
         if (v0Mesh.current !== null && v1Mesh.current !== null && model !== null) {
@@ -76,28 +78,28 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
             eventControls.attachEvent('dragAndDrop', function (altUsed) {
                 i++;
 
-                if (i % 8 === 0) {
+                // if (i % 8 === 0) {
 
-                    // If alt is being used, snap to the grid
-                    if (altUsed) {
-                        // Switch to the tile grid shader if it hasn't already
-                        if (model.current.material === M.tileMat)
-                            model.current.material = M.tileGridMat(fragmentShader, vertexShader)
+                // If alt is being used, snap to the grid
+                if (altUsed) {
+                    // Switch to the tile grid shader if it hasn't already
+                    if (model.current.material === M.tileMat)
+                        model.current.material = M.tileGridMat(fragmentShader, vertexShader)
 
-                        this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
-                        this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
-                    } else {
-                        // Update marker position to wherever the mouse pointer is currently located
-                        this.focused.position.y = this.previous.y;
-                    }
-
-                    if (this.focused.name === "v0") {
-
-                        setVectors([new THREE.Vector2(this.focused.position.x, this.focused.position.z), vectorRef.current[1]]);
-                    } else {
-                        setVectors([vectorRef.current[0], new THREE.Vector2(this.focused.position.x, this.focused.position.z)]);
-                    }
+                    this.focused.position.x = 11.855 * Math.round((this.focused.position.x) / 11.855);
+                    this.focused.position.z = 11.855 * Math.round((this.focused.position.z) / 11.855);
+                } else {
+                    // Update marker position to wherever the mouse pointer is currently located
+                    // this.focused.position.y = this.previous.y;
                 }
+
+                if (this.focused.name === "v0") {
+
+                    setVectors([new THREE.Vector2(this.focused.position.x, this.focused.position.z), vectorRef.current[1]]);
+                } else {
+                    setVectors([vectorRef.current[0], new THREE.Vector2(this.focused.position.x, this.focused.position.z)]);
+                }
+                // }
 
 
             });
@@ -114,7 +116,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [camera, gl.domElement, model, dragging, setDragging])
-    let points = curve.getPoints(400);
+    let points = curve.getPoints(200);
 
     // const colors = [];
 
@@ -130,35 +132,52 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0], v[1])));
 
+    const robotGeometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0] * 1.5, v[1] * 1.5)));
+
 
     const v0Geometry = new THREE.BufferGeometry().setFromPoints([startPos, new THREE.Vector3(vectors[0].x, 0, vectors[0].y)]);
     const v1Geometry = new THREE.BufferGeometry().setFromPoints([endPos, new THREE.Vector3(vectors[1].x, 0, vectors[1].y)]);
+
+    const straightLineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector2(-5, 0), new THREE.Vector2(5, 0)]);
 
     // geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
     return (
         <>
 
-            <mesh name={"v0"} ref={v0Mesh} position={[vectors[0].x, 0.5, vectors[0].y]}>
+            <mesh name={"v0"} ref={v0Mesh} position={[vectors[0].x, 0, vectors[0].y]}>
                 <boxGeometry args={[1, 1, 1]} />
                 <meshStandardMaterial color={"red"} />
             </mesh>
 
-            <mesh name={"v1"} ref={v1Mesh} position={[vectors[1].x, 0.5, vectors[1].y]}>
+            <mesh name={"v1"} ref={v1Mesh} position={[vectors[1].x, 0, vectors[1].y]}>
                 <boxGeometry args={[1, 1, 1]} />
                 <meshStandardMaterial color={"green"} />
             </mesh>
 
 
             <line position={[0, 0.1, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={geometry} />
+            {points.slice(0, -1).map((v, i) => {
+                return (
+                    <>
+                        <line position={[v[0], 0.1, v[1]]} geometry={straightLineGeometry} rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]}>
+                            <lineBasicMaterial color={"red"} />
+                            {/* <boxGeometry args={[10, 0.01, 0.11]}/>
+                        <meshStandardMaterial color={"red"} opacity={0.2} transparent={true}/> */}
+                        </line>
+                    </>
+                )
+            })}
+            {/* <line position={[0, 0.1, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={robotGeometry} /> */}
+            {/* <line position={[0, 0.1, -3]} rotation={[Math.PI / 2, 0, 0]} geometry={geometry} /> */}
 
             <line position={[0, 0.1, 0]} geometry={v0Geometry}>
                 <lineBasicMaterial color={"yellow"} />
             </line>
 
-            <line position={[0, 0.1, 0]} geometry={v1Geometry}>
+            {/* <line position={[0, 0.1, 0]} geometry={v1Geometry}>
                 <lineBasicMaterial color={"yellow"} />
-            </line>
+            </line> */}
 
             {/* {points.map((v, i) => {
                 return <mesh position={[v.x, 0, v.y]}><boxGeometry args={[0.3, 0.3, 0.3]} /><meshStandardMaterial /></mesh>

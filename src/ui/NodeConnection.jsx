@@ -116,7 +116,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [camera, gl.domElement, model, dragging, setDragging])
-    let points = curve.getPoints(200);
+    let points = curve.getPoints(400);
 
     // const colors = [];
 
@@ -132,13 +132,13 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
     const geometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0], v[1])));
 
-    const robotGeometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0] * 1.5, v[1] * 1.5)));
+    // const robotGeometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0] * 1.5, v[1] * 1.5)));
 
 
     const v0Geometry = new THREE.BufferGeometry().setFromPoints([startPos, new THREE.Vector3(vectors[0].x, 0, vectors[0].y)]);
     const v1Geometry = new THREE.BufferGeometry().setFromPoints([endPos, new THREE.Vector3(vectors[1].x, 0, vectors[1].y)]);
 
-    const straightLineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector2(-5, 0), new THREE.Vector2(5, 0)]);
+    const straightLineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector2(-5, 0.1), new THREE.Vector2(5, 0.1), new THREE.Vector2(5, 6.5), new THREE.Vector2(-5, 6.5), new THREE.Vector2(-5, 0.1)]);
 
     // geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
 
@@ -160,7 +160,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
             {points.slice(0, -1).map((v, i) => {
                 return (
                     <>
-                        <line position={[v[0], 0.1, v[1]]} geometry={straightLineGeometry} rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]}>
+                        <line key={"straightline" + i} position={[v[0], 0.1, v[1]]} geometry={straightLineGeometry} rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]}>
                             <lineBasicMaterial color={"red"} />
                             {/* <boxGeometry args={[10, 0.01, 0.11]}/>
                         <meshStandardMaterial color={"red"} opacity={0.2} transparent={true}/> */}
@@ -175,9 +175,9 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
                 <lineBasicMaterial color={"yellow"} />
             </line>
 
-            {/* <line position={[0, 0.1, 0]} geometry={v1Geometry}>
+            <line position={[0, 0.1, 0]} geometry={v1Geometry}>
                 <lineBasicMaterial color={"yellow"} />
-            </line> */}
+            </line>
 
             {/* {points.map((v, i) => {
                 return <mesh position={[v.x, 0, v.y]}><boxGeometry args={[0.3, 0.3, 0.3]} /><meshStandardMaterial /></mesh>

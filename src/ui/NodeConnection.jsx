@@ -9,8 +9,6 @@ import * as S from "../models/shaders";
 import * as M from '../models/materials'
 import { CubicHermiteSpline } from '../lib/CubicHermiteSpline';
 
-var i = 0;
-
 export default function NodeConnection({ dragging, setDragging, model, startMarker, endMarker }) {
 
 
@@ -76,10 +74,6 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
             })
 
             eventControls.attachEvent('dragAndDrop', function (altUsed) {
-                i++;
-
-                // if (i % 8 === 0) {
-
                 // If alt is being used, snap to the grid
                 if (altUsed) {
                     // Switch to the tile grid shader if it hasn't already
@@ -157,7 +151,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
 
             <line position={[0, 0.1, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={geometry} />
-            {points.slice(0, -1).map((v, i) => {
+            {points.slice(0, -1).filter((_element, index) => index % 16 === 0).map((v, i) => {
                 return (
                     <>
                         <line key={"straightline" + i} position={[v[0], 0.1, v[1]]} geometry={straightLineGeometry} rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]}>

@@ -5,6 +5,7 @@ import FieldModel from "./models/FieldModel"
 import './App.css'
 import NUIManagerRenderer from './ui/UIManager'
 import UI from './ui/UI'
+import CameraContainer from './ui/CameraContainer'
 
 /**
  * Filters the intersections of the raycast to only use the first found object. This prevents multiple objects being selected by one raycast.
@@ -61,6 +62,8 @@ export default function App() {
         <Suspense fallback={null}>
           <FieldModel/>
         </Suspense>
+
+        <CameraContainer/>
 
       </Canvas>
     </>

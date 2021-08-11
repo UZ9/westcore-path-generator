@@ -8,18 +8,26 @@ import { tileMat, tileGridMat } from "../models/materials";
 import { useNodeStore } from "../stores/NodeStore";
 import * as S from "../models/shaders";
 
-export default function Node({ dragging, node, index, selected, setSelect, setDragging, model }) {
+export default function Node({ node, index, selected, setSelect, model }) {
+    console.log("Rendering node");
+
     const store = useCreateStore();
 
     const vertexShader = S.gridTileVertex;
     const fragmentShader = S.gridTileFragment;
 
+    const setNodeDragging = useNodeStore(state => state.setNodeCurrentlyDragging);
     const setNodeState = useNodeStore(state => state.setNodeState);
 
     const { gl, camera } = useThree();
 
     const mesh = useRef(null)
-    const [hovered, setHover] = React.useState(false)
+
+    const [[dragging, hovered], setSelectionStatus] = React.useState([false, false]);
+
+    const selectionStatus = useRef(null);
+
+    selectionStatus.current = { dragging, hovered };
 
     const billboard = useRef(null);
 
@@ -43,10 +51,10 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
             const eventControls = new EventsControls(camera, gl.domElement);
 
             eventControls.attachEvent('mouseOver', function () {
-                if (dragging === false)
-                    setDragging(true);
-                if (hovered === false)
-                    setHover(true);
+                if (!selectionStatus.current.dragging) {
+                    setNodeDragging(true);
+                    setSelectionStatus([true, true]);
+                }
             })
 
             eventControls.attachEvent('onclick', function (event) {
@@ -56,15 +64,17 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
             })
 
             eventControls.attachEvent('mouseOut', function () {
-                setDragging(false);
-                setHover(false);
+                setNodeDragging(false);
+                setSelectionStatus([false, false]);
             })
 
             eventControls.attachEvent('mouseUp', function () {
                 mesh.current.material.opacity = 1;
                 model.current.material = tileMat
 
-                setHover(true);
+                if (!selectionStatus.current.hovered) {
+                    setSelectionStatus([dragging, false]);
+                }
             })
 
             eventControls.attachEvent('dragAndDrop', function (altUsed) {
@@ -88,7 +98,7 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [index, setSelect, store, camera, gl.domElement, setDragging, model])
+    }, [index, setSelect, store, camera, gl.domElement, model])
 
     useEffect(() => {
         // Update the node's position and name

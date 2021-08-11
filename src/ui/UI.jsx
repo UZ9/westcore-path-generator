@@ -4,7 +4,6 @@ import { useUiLevaStore } from "../stores/UILevaStore";
 import * as THREE from "three";
 import { useNodeStore } from "../stores/NodeStore";
 
-
 export default function UI() {
     const importButton = useRef();
     const waypointButton = useRef();
@@ -91,7 +90,6 @@ export default function UI() {
             </div>
             <LevaPanel store={store} fill flat titleBar={false} />
             <Leva fill flat titleBar={false} style={{ position: "absolute" }} />
-
         </div>
     )
 }

@@ -9,8 +9,9 @@ import * as S from "../models/shaders";
 import * as M from '../models/materials'
 import { CubicHermiteSpline } from '../lib/CubicHermiteSpline';
 import { useUiLevaStore } from '../stores/UILevaStore';
+import { useNodeStore } from '../stores/NodeStore';
 
-export default function NodeConnection({ dragging, setDragging, model, startMarker, endMarker }) {
+export default function NodeConnection({ model, startMarker, endMarker }) {
 
     const robotVisualization = useUiLevaStore(state => state.showRobotVisualization);
 
@@ -18,6 +19,8 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
     const endPos = endMarker.position;
 
     const [vectors, setVectors] = useState([new THREE.Vector2(20, 0), new THREE.Vector2(0, 0)]);
+
+    const setNodeDragging = useNodeStore(state => state.setNodeCurrentlyDragging);
 
     const vertexShader = S.gridTileVertex;
     const fragmentShader = S.gridTileFragment;
@@ -36,9 +39,6 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
     // Calculate the midpoint of the vectors
     position.subVectors(endPos, startPos).divideScalar(2).add(startPos);
-
-    const [hovered, setHover] = useState(false)
-
     // Add a bit of y-offset to avoid clipping the floor
     position.add(new THREE.Vector3(0, 0.01, 0));
 
@@ -52,10 +52,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
             const eventControls = new EventsControls(camera, gl.domElement);
 
             eventControls.attachEvent('mouseOver', function () {
-                if (dragging === false)
-                    setDragging(true);
-                if (hovered === false)
-                    setHover(true);
+                setNodeDragging(true);
             })
 
             eventControls.attachEvent('onclick', function (event) {
@@ -64,15 +61,12 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
             })
 
             eventControls.attachEvent('mouseOut', function () {
-                setHover(false);
-                setDragging(false);
+                setNodeDragging(false);
             })
 
             eventControls.attachEvent('mouseUp', function () {
                 this.focused.material.opacity = 1;
                 model.current.material = M.tileMat
-
-                setHover(true);
             })
 
             eventControls.attachEvent('dragAndDrop', function (altUsed) {
@@ -101,7 +95,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [camera, gl.domElement, model, dragging, setDragging])
+    }, [camera, gl.domElement, model])
     let points = curve.getPoints(400);
 
     // Create the spline geometry from the generated points
@@ -136,7 +130,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
                 i = i * visualizationDrawRate;
 
                 return (
-                    <mesh rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]} position={[points[i + 1][0], 0, points[i + 1][1]]} >
+                    <mesh key={"robotvisualization " + i} rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]} position={[points[i + 1][0], 0, points[i + 1][1]]} >
                         <boxGeometry args={[robotWidth, robotHeight, robotDepth]} />
                         <meshStandardMaterial color={"red"} depthWrite={false} depthTest={false} opacity={0.2} transparent={true} /> */
                     </mesh>

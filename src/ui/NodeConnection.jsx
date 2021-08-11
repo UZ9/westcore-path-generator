@@ -8,9 +8,11 @@ import * as S from "../models/shaders";
 
 import * as M from '../models/materials'
 import { CubicHermiteSpline } from '../lib/CubicHermiteSpline';
+import { useUiLevaStore } from '../stores/UILevaStore';
 
 export default function NodeConnection({ dragging, setDragging, model, startMarker, endMarker }) {
 
+    const robotVisualization = useUiLevaStore(state => state.showRobotVisualization);
 
     const startPos = startMarker.position;
     const endPos = endMarker.position;
@@ -132,9 +134,24 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
     const v0Geometry = new THREE.BufferGeometry().setFromPoints([startPos, new THREE.Vector3(vectors[0].x, 0, vectors[0].y)]);
     const v1Geometry = new THREE.BufferGeometry().setFromPoints([endPos, new THREE.Vector3(vectors[1].x, 0, vectors[1].y)]);
 
-    const straightLineGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector2(-5, 0.1), new THREE.Vector2(5, 0.1), new THREE.Vector2(5, 6.5), new THREE.Vector2(-5, 6.5), new THREE.Vector2(-5, 0.1)]);
+    // const straightLineGeometry = new THREE.BufferGeometry().setFromPoints(
+    //     [
+    //         new THREE.Vector2(-5, 0.1),
+    //         new THREE.Vector2(5, 0.1),
+    //         new THREE.Vector2(5, 6.5),
+    //         new THREE.Vector2(-5, 6.5),
+    //         new THREE.Vector2(-5, 0.1)
+    //     ]);
 
     // geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+
+    const visualizationDrawRate = 24;
+
+    // Inches
+    const robotWidth = 18;
+    const robotDepth = 18;
+    const robotHeight = 18;
 
     return (
         <>
@@ -151,17 +168,25 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
 
             <line position={[0, 0.1, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={geometry} />
-            {points.slice(0, -1).filter((_element, index) => index % 16 === 0).map((v, i) => {
+            {robotVisualization ? points.slice(0, -1).filter((_element, index) => index % visualizationDrawRate === 0).map((v, i) => {
+
+                i = i * visualizationDrawRate;
+
+                console.log([v, points[i + 1], Math.atan2(v[1] - points[i + 1][1], v[0] - points[i + 1][0])]);
+
                 return (
                     <>
-                        <line key={"straightline" + i} position={[v[0], 0.1, v[1]]} geometry={straightLineGeometry} rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]}>
+                        {/* <line key={"straightline" + i} position={[v[0], 0.1, v[1]]} geometry={straightLineGeometry}>
                             <lineBasicMaterial color={"red"} />
-                            {/* <boxGeometry args={[10, 0.01, 0.11]}/>
-                        <meshStandardMaterial color={"red"} opacity={0.2} transparent={true}/> */}
-                        </line>
+
+                        </line> */}
+                        <mesh rotation={[0, Math.atan2(v[0] - points[i + 1][0], v[1] - points[i + 1][1]), 0]} position={[points[i + 1][0], 0, points[i + 1][1]]} >
+                            <boxGeometry args={[robotWidth, robotHeight, robotDepth]}/>
+                            <meshStandardMaterial color={"red"} depthWrite={false} depthTest={false} opacity={0.2} transparent={true} /> */
+                        </mesh>
                     </>
                 )
-            })}
+            }) : <></>}
             {/* <line position={[0, 0.1, 0]} rotation={[Math.PI / 2, 0, 0]} geometry={robotGeometry} /> */}
             {/* <line position={[0, 0.1, -3]} rotation={[Math.PI / 2, 0, 0]} geometry={geometry} /> */}
 

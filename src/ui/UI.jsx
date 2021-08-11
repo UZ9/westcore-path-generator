@@ -16,14 +16,19 @@ export default function UI() {
     const toggleFieldElements = useUiLevaStore(state => state.toggleFieldElements);
 
     const toggleMarkerMode = useUiLevaStore(state => state.toggleMarkerMode);
+    const toggleRobotVisualization = useUiLevaStore(state => state.toggleRobotVisualization);
 
     const [buttonSelected, setButtonSelected] = useState(false);
 
-    const {importString} = useControls(
+    const { importString } = useControls(
         {
             hideGameElements: {
                 value: false,
                 onChange: () => { toggleFieldElements(); }
+            },
+            showRobotVisualization: {
+                value: false,
+                onChange: () => { toggleRobotVisualization(); }
             },
             importString: "Import String Goes Here"
         }
@@ -41,7 +46,7 @@ export default function UI() {
             addNode(parsedNodes[index]);
         }
     }
-    
+
 
     let exportProject = () => {
         console.log(JSON.stringify(nodes));

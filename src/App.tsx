@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import React, { useRef, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import FieldModel from "./models/FieldModel"
-import { Box } from '@react-three/drei'
 import './App.css'
 import NUIManagerRenderer from './ui/UIManager'
 import UI from './ui/UI'

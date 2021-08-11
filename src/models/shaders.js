@@ -1,3 +1,4 @@
+// Vertex shader for the field visualization when snapping waypoints to the grid
 export const gridTileVertex = String.raw`
 attribute vec3 in_Position;
 varying vec2 fragCoord;
@@ -10,6 +11,7 @@ void main()
     fragCoord = position.xy;
 }`;
 
+// Fragment shader for the field visualization when snapping waypoints to the grid
 export const gridTileFragment = String.raw`
 precision highp float;
 precision highp int;

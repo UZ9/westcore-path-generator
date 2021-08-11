@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 
+import * as S from './shaders'
+
 export const redMat = new THREE.MeshStandardMaterial({
     color: "hsl(0,87%,46%)",
     metalness: 0.5,
@@ -73,11 +75,11 @@ export const shadowMat = new THREE.MeshStandardMaterial({
 });
 
 
-export const tileGridMat = (fragmentShader, vertexShader) => new THREE.ShaderMaterial({
+export const tileGridMat = new THREE.ShaderMaterial({
     side: THREE.FrontSide,
     uniforms: tileGridUniforms,
-    fragmentShader: fragmentShader,
-    vertexShader: vertexShader
+    fragmentShader: S.gridTileFragment,
+    vertexShader: S.gridTileVertex
 })
 
 

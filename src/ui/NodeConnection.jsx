@@ -44,6 +44,7 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
 
     const velocityScalarFunc = (val) => val * 1;
 
+    // Construct the hermite spline 
     const curve = new CubicHermiteSpline([[startPos.x, startPos.z], [endPos.x, endPos.z]], [[velocityScalarFunc(vectors[0].x), velocityScalarFunc(vectors[0].y)], [velocityScalarFunc(vectors[1].x), velocityScalarFunc(vectors[1].y)]]);
 
     useEffect(() => {
@@ -103,14 +104,17 @@ export default function NodeConnection({ dragging, setDragging, model, startMark
     }, [camera, gl.domElement, model, dragging, setDragging])
     let points = curve.getPoints(400);
 
+    // Create the spline geometry from the generated points
     const geometry = new THREE.BufferGeometry().setFromPoints(points.map((v, i) => new THREE.Vector2(v[0], v[1])));
 
+    // Create the lines between the nodes and tangents
     const v0Geometry = new THREE.BufferGeometry().setFromPoints([startPos, new THREE.Vector3(vectors[0].x, 0, vectors[0].y)]);
     const v1Geometry = new THREE.BufferGeometry().setFromPoints([endPos, new THREE.Vector3(vectors[1].x, 0, vectors[1].y)]);
 
+    // Determines how many visualization meshes are constructed (more is less)
     const visualizationDrawRate = 24;
 
-    // Inches
+    // Represents the robot's size measurements in inches
     const robotWidth = 18;
     const robotDepth = 18;
     const robotHeight = 18;

@@ -32,10 +32,12 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
     )
 
     useEffect(() => {
+        // As the node has just been initialized, set it as the currently selected node in the store
         setSelect([index, store])
 
+        // Wait until the mesh has been loaded
         if (mesh.current !== null && model !== null) {
-
+            // Update the node position and name
             set({ position: [node.position.x, node.position.y, node.position.z], name: node.name })
 
             const eventControls = new EventsControls(camera, gl.domElement);
@@ -48,9 +50,9 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
             })
 
             eventControls.attachEvent('onclick', function (event) {
-
+                // If the user is holding down the alt key, switch to the tile grid material
                 if (event.altKey)
-                    model.current.material = tileGridMat(fragmentShader, vertexShader)
+                    model.current.material = tileGridMat;
             })
 
             eventControls.attachEvent('mouseOut', function () {
@@ -85,14 +87,11 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
             eventControls.map = model.current;
         }
 
-
-
-
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index, setSelect, store, camera, gl.domElement, setDragging, model])
 
     useEffect(() => {
+        // Update the node's position and name
         setNodeState(state => {
             if (mesh.current !== null) {
                 state.nodes[index].position = mesh.current.position;
@@ -102,18 +101,27 @@ export default function Node({ dragging, node, index, selected, setSelect, setDr
         })
     }, [index, setNodeState, name])
 
+    /**
+     * Fetches the current mesh position based on the mesh ref
+     * @returns The current mesh position in the format [x, y, z]
+     */
     function getMeshPos() {
         const currentPos = mesh.current.position;
 
         return [currentPos.x, currentPos.y, currentPos.z];
     }
 
+    /**
+     * Fetches the current billboard position, based on the mesh reference with a y offset
+     * @returns The current billboard position in the format [x, y, z]
+     */
     function getBillboardPos() {
         let meshPos = getMeshPos();
 
         return [meshPos[0], meshPos[1] + 2.5, meshPos[2]];
     }
 
+    // Update the leva UI display
     set({ position: mesh.current === null ? [-1, -1, -1] : getMeshPos() })
 
     return (

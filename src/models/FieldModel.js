@@ -5,7 +5,7 @@ import { useNodeStore } from '../stores/NodeStore';
 import { useModelStore } from '../stores/ModelStore';
 import { useUiLevaStore } from '../stores/UILevaStore';
 
-export default function Model(props) {
+export default function FieldModel(props) {
   const addNode = useNodeStore(state => state.addNode);
 
   const tileMesh = useRef(null);
@@ -16,18 +16,26 @@ export default function Model(props) {
   const markerMode = useUiLevaStore(state => state.markerMode);
   const hideTiles = useUiLevaStore(state => state.hideFieldElements);
 
+  /**
+   * Adds new nodes to the node store if the marker mode boolean is true
+   * 
+   * @param {Event} clicked The event click to be passed in  
+   */
   const onFieldTileClick = (clicked) => {
     clicked.stopPropagation();
 
     if (markerMode) {
+      // Set an initial name of "Waypoint" and initial position of where the user clicked
       addNode({ name: "Waypoint", position: clicked.point });
     }
-    // props.ui({name: "Waypoint", position: clicked.point});
   }
 
   const group = useRef()
+
+  // Retrieve nodes data from GLTF
   const { nodes } = useGLTF(process.env.PUBLIC_URL + '/fieldmodel.gltf')
 
+  // Contains a list of all the lexan wall meshes 
   const lexanWallPanels = [
     nodes.Perimeter_Lexan_Wall_Panel000,
     nodes.Perimeter_Lexan_Wall_Panel001,
@@ -49,13 +57,7 @@ export default function Model(props) {
   })
 
   useEffect(() => {
-    // The UIManager needs to have a reference to the tile model
-
     setModel(tileMesh);
-
-    // if (props.tiles === null && tileMesh.current !== null) {
-    //   props.setTiles(tileMesh);
-    // }
   })
 
   return (

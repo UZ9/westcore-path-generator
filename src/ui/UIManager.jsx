@@ -51,8 +51,6 @@ export default function UIManager() {
 
         {<OrbitControls enabled={!dragging} />}
         <Stats/>
-
-        {/* <Line color={"red"} lineWidth={10}  points={[[0, 20, 0], [10, 20, 0]]}/> */}
     </>
 
 }

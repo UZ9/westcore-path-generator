@@ -34,6 +34,10 @@ export default function UI() {
         }
     )
 
+    /**
+     * Imports a list of waypoints from a JSON string 
+     * @param importString The JSON string to import from
+     */
     let importProject = (importString) => {
         const parsedNodes = JSON.parse(importString);
 
@@ -47,7 +51,10 @@ export default function UI() {
         }
     }
 
-
+    /**
+     * Exports a list of waypoints 
+     * @returns A JSON string containing the waypoint data
+     */
     let exportProject = () => {
         console.log(JSON.stringify(nodes));
         return JSON.stringify(nodes);

@@ -51,6 +51,13 @@ export default function NodeConnection({ model, startMarker, endMarker }) {
         if (v0Mesh.current !== null && v1Mesh.current !== null && model !== null) {
             const eventControls = new EventsControls(camera, gl.domElement);
 
+
+            const deltaX = endPos.x - startPos.x;
+            const deltaZ = endPos.z - endPos.z;
+
+            setVectors([new THREE.Vector2(startPos.x + deltaX / 5, startPos.z + deltaZ / 5),
+                new THREE.Vector2(endPos.x - deltaX / 5, endPos.z - deltaZ / 5)]);
+
             eventControls.attachEvent('mouseOver', function () {
                 setNodeDragging(true);
             })
